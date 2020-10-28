@@ -1,0 +1,7 @@
+MethodLength:
+  CountComments: true  # count full line comments?
+  Max: 11
+
+# Use only ascii symbols in comments.
+AsciiComments:
+  Enabled: false
