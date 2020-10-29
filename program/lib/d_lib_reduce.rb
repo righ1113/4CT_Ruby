@@ -2,10 +2,10 @@
 
 require '../lib/c_read_file'
 
-# comment
-module Reduce
-  # comment
-  class Reduce
+# LibReduce モジュール
+module LibReduce
+  # LibReduce クラス
+  class LibReduce
     include ReadFile
 
     def initialize

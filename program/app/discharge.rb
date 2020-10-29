@@ -5,17 +5,21 @@
 # irb なら
 # $ irb
 # > load 'discharge.rb'
-# > discharge
+# > Discharge.discharge 7
 
+require '../lib/c_read_file'
 require '../lib/d_lib_reduce'
 
-# comment
+# LibReduce をインクルードするため、クラスにする
 class Discharge
-  include Reduce
+  include ReadFile
+  include LibReduce
 
   def self.discharge(deg = 7)
-    p deg
-    Reduce.new
+    puts "中心の次数deg : #{deg}"
+    reduce = LibReduce.new
+    tactics = Tactics.new
+    p tactics.dummy
   end
 end
 
