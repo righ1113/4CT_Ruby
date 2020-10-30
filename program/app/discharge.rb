@@ -16,8 +16,14 @@ class Discharge
   include LibReduce
 
   def self.discharge(deg = 7)
-    puts "中心の次数deg : #{deg}"
+    puts "中心の次数 deg : #{deg}"
+
+    # LibReduce クラスのインスタンスを作る
     reduce = LibReduce.new
+    reduce.r_axles[:low][0][3] = 7
+    p reduce.r_axles[:low][0]
+
+    # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
     p tactics.dummy
   end
