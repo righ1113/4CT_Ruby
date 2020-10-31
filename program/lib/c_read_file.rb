@@ -4,7 +4,9 @@
 module ReadFile
   # ReadFile スーパークラス
   class ReadFile
-    def read_file; end
+    def initialize; end
+
+    def read_file;  end
   end
 
   # sub class 1
@@ -16,6 +18,18 @@ module ReadFile
 
     def read_file
       p self
+    end
+  end
+
+  # sub class 2
+  class Rules < ReadFile
+    def initialize
+      super
+      read_file
+    end
+
+    def read_file
+      p 'Rules read_file() start & goal'
     end
   end
 

@@ -1,7 +1,13 @@
 MethodLength:
-  CountComments: true  # count full line comments?
-  Max: 11
+  CountComments: false  # count full line comments?
+  Max: 47
 
 # Use only ascii symbols in comments.
 AsciiComments:
   Enabled: false
+
+AbcSize:
+  Max: 47
+
+CyclomaticComplexity:
+  Max: 8

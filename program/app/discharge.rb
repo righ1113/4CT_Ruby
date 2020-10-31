@@ -10,7 +10,7 @@
 require '../lib/c_read_file'
 require '../lib/d_lib_reduce'
 
-# LibReduce をインクルードするため、クラスにする
+# LibReduce 他をインクルードするため、クラスにする
 class Discharge
   include ReadFile
   include LibReduce
