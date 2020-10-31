@@ -16,12 +16,16 @@ class Discharge
   include LibReduce
 
   def self.discharge(deg = 7)
-    puts "中心の次数 deg : #{deg}"
+    puts "中心の次数 deg: #{deg}"
 
     # LibReduce クラスのインスタンスを作る
     reduce = LibReduce.new
     reduce.r_axles[:low][0][3] = 7
     p reduce.r_axles[:low][0]
+
+    # Rules クラスのインスタンスを作る
+    rules = Rules.new
+    p rules.dummy
 
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
@@ -30,9 +34,9 @@ class Discharge
 end
 
 if __FILE__ == $PROGRAM_NAME
-  if %w[7 8 9 10 11].find_index(ARGV[0]).nil?
-    Discharge.discharge
-  else
+  if %w[7 8 9 10 11].include?(ARGV[0])
     Discharge.discharge ARGV[0].to_i
+  else
+    Discharge.discharge
   end
 end

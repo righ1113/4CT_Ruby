@@ -23,9 +23,12 @@ module ReadFile
 
   # sub class 2
   class Rules < ReadFile
+    attr_reader :dummy
+
     def initialize
       super
       read_file
+      @dummy = 5
     end
 
     def read_file
