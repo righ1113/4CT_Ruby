@@ -21,7 +21,7 @@ module LibReduce
       GoodConfs.new
 
       # インスタンス変数を作る
-      @r_axles  = {
+      @r_axles = {
         low: Array.new(MAXLEV + 1, Array.new(CARTVERT, 0)),
         upp: Array.new(MAXLEV + 1, Array.new(CARTVERT, 0)),
         lev: 0
@@ -46,7 +46,7 @@ module LibReduce
         get_adjmat   num_axles deg
         get_edgelist num_axles deg
         # for (h = 0; h < noconf; ++h)
-        #   if SubConf(aStack.adjmat, aStack.axle.upp[num_axles], rP2.redquestions[h], rP2.edgelist, rP2.image, rP2.used)
+        #   if SubConf(aStack.adjmat, aStack.axle.upp[num_axles], rP2.redquestions[h], edgelist, image, used)
         #     break
         if h == noconf
           puts 'Not reducible'

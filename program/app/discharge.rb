@@ -30,6 +30,32 @@ class Discharge
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
     p tactics.dummy
+    p tactics.tacs[0]
+    p tactics.tacs[1]
+    p tactics.tacs[2]
+    p tactics.tacs[13]
+
+    # main loop
+    tactics.tacs.each_with_index do |tac, i|
+      next if i.zero? # 下に空行を入れるらしい
+
+      break if tac[0] == 'Q.E.D' # 暫定脱出
+
+      puts "#{i}: #{tac}"
+      case tac[1]
+      when 'S'
+        puts 'Symmetry.'
+      when 'R'
+        puts 'Reduce.'
+      when 'H'
+        puts 'Hubcap.'
+      when 'C'
+        puts 'Condition.'
+      else
+        raise "無効なtactic: #{tac}"
+      end
+      break if tac[1] == 'S' # 暫定脱出
+    end
   end
 end
 

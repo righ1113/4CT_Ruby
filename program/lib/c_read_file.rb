@@ -38,7 +38,7 @@ module ReadFile
 
   # sub class 3
   class Tactics < ReadFile
-    attr_reader :dummy
+    attr_reader :dummy, :tacs
 
     def initialize
       super
@@ -48,6 +48,10 @@ module ReadFile
 
     def read_file
       p 'Tactics read_file() start & goal'
+      @tacs = []
+      File.foreach('../4ct_data/d_tactics07.txt') do |line|
+        tacs << line.chomp.split
+      end
     end
   end
 end
