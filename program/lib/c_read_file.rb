@@ -6,7 +6,9 @@ module ReadFile
   class ReadFile
     def initialize; end
 
-    def read_file;  end
+    private
+
+    def read_file; end
   end
 
   # sub class 1
