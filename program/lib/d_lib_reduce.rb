@@ -1,18 +1,14 @@
 # frozen_string_literal: true
 
+require '../lib/c_const'
 require '../lib/c_read_file'
 
 # LibReduce モジュール
 module LibReduce
   # LibReduce クラス
   class LibReduce
+    include Const
     include ReadFile
-
-    MAXVAL     = 12
-    CARTVERT   = 5 * MAXVAL + 2 # domain of l_A, u_A, where A is an axle
-    MAXELIST   = 134            # length of edgelist[a][b]
-    MAXSTACK   = 5              # max height of Astack (see "Reduce")
-    MAXLEV     = 12             # max level of an input line + 1
 
     attr_accessor :r_axles
 
@@ -22,14 +18,14 @@ module LibReduce
 
       # インスタンス変数を作る
       @r_axles = {
-        low: Array.new(MAXLEV + 1, Array.new(CARTVERT, 0)),
-        upp: Array.new(MAXLEV + 1, Array.new(CARTVERT, 0)),
+        low: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
+        upp: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
         lev: 0
       }
-      @adjmat   = Array.new(CARTVERT, Array.new(CARTVERT, 0))
-      @edgelist = Array.new(12, Array.new(9, Array.new(MAXELIST, 0)))
-      @used     = Array.new(CARTVERT, false)
-      @image    = Array.new(CARTVERT, 0)
+      @adjmat   = Array.new(Const::CARTVERT, Array.new(Const::CARTVERT, 0))
+      @edgelist = Array.new(12, Array.new(9, Array.new(Const::MAXELIST, 0)))
+      @used     = Array.new(Const::CARTVERT, false)
+      @image    = Array.new(Const::CARTVERT, 0)
     end
 
     def update_reduce(deg, axles)
@@ -40,7 +36,7 @@ module LibReduce
 
       noconf    = 633 # 好配置の個数
       num_axles = 1
-      while num_axles.positive? && num_axles < MAXASTACK
+      while num_axles.positive? && num_axles < Const::MAXASTACK
         num_axles -= 1
         puts 'Axle from stack:'
         get_adjmat   num_axles deg

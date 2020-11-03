@@ -16,6 +16,8 @@ module ReadFile
       read_file
     end
 
+    private
+
     def read_file
       p self
     end
@@ -31,6 +33,8 @@ module ReadFile
       @dummy = 5
     end
 
+    private
+
     def read_file
       p 'Rules read_file() start & goal'
     end
@@ -45,6 +49,8 @@ module ReadFile
       read_file
       @dummy = 3
     end
+
+    private
 
     def read_file
       p 'Tactics read_file() start & goal'
