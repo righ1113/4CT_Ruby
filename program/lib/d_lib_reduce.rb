@@ -39,8 +39,9 @@ module LibReduce
       while num_axles.positive? && num_axles < Const::MAXASTACK
         num_axles -= 1
         puts 'Axle from stack:'
-        get_adjmat   num_axles deg
-        get_edgelist num_axles deg
+        get_adjmat   num_axles, deg
+        get_edgelist num_axles, deg
+        h = 0
         # for (h = 0; h < noconf; ++h)
         #   if SubConf(aStack.adjmat, aStack.axle.upp[num_axles], rP2.redquestions[h], edgelist, image, used)
         #     break
@@ -56,9 +57,9 @@ module LibReduce
 
         # p ("Conf({0},{1},{2}): ", h / 70 + 1, (h % 70) / 7 + 1, h % 7 + 1)
         (1..redverts).each do |j|
-          if image[j] != -1
-            p 'hoge' # (" {0}({1})", rP2.image.ver[j], j);
-          end
+          # if image[j] != -1
+          #   p 'hoge' # (" {0}({1})", rP2.image.ver[j], j);
+          # end
         end
 
         # omitted
@@ -67,7 +68,7 @@ module LibReduce
         # Double-check isomorphism
 
         ((redring + 1)..redverts).each do |i|
-          v = image[i]
+          v = i # image[i]
           r_axles[:low][num_axles][v] == r_axles[:upp][num_axles][v] && next
           puts 'Lowering upper bound of vertex'
           p 'fuga' # ("{0} to {1} and adding to stack\n", v, aStack.axle.upp[num_axles][v] - 1);

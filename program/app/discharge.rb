@@ -53,7 +53,7 @@ class Discharge
     end
   end
 
-  def self.main_loop(_i_reduce, _rules, tactics)
+  def self.main_loop(i_reduce, _rules, tactics)
     p @axles[:lev]
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
@@ -68,6 +68,7 @@ class Discharge
         @axles[:lev] -= 1
       when 'R'
         puts 'Reduce.'
+        p i_reduce.update_reduce @deg, @axles
         @axles[:lev] -= 1
       when 'H'
         puts 'Hubcap.'
