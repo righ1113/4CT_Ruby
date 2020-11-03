@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'minitest'
+
 # Const モジュール
 module Const
   # Const クラス
@@ -9,5 +11,15 @@ module Const
     MAXELIST   = 134            # length of edgelist[a][b]
     MAXASTACK  = 5              # max height of Astack (see "Reduce")
     MAXLEV     = 12             # max level of an input line + 1
+  end
+
+  # Assert クラス
+  class Assert < Minitest::Test
+    class << self
+      # このモジュールの中に各種assertが定義されているのでinclude
+      include Minitest::Assertions
+
+      attr_accessor :assertions
+    end
   end
 end

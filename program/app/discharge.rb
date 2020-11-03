@@ -44,6 +44,9 @@ class Discharge
     p tactics.tacs[2]
     p tactics.tacs[13]
 
+    Assert.assertions = 0
+    Assert.assert_equal (2 + 1), 3, 'fail1'
+
     ret = main_loop i_reduce, rules, tactics
     # final check
     if ret == 'Q.E.D.'
@@ -77,7 +80,7 @@ class Discharge
         puts 'Condition.'
         @axles[:lev] += 1
       else
-        raise "無効なtactic: #{tac}"
+        Assert.assert_equal (1 == 2), true, "無効なtactic: #{tac}"
       end
       break 'ahaha' if tac[1] == 'S' # 暫定脱出
     end
