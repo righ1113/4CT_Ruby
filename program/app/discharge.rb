@@ -10,12 +10,14 @@
 require '../lib/c_const'
 require '../lib/c_read_file'
 require '../lib/d_lib_reduce'
+require '../lib/d_condition'
 
 # LibReduce 他をインクルードするため、クラスにする
 class Discharge
   include Const
   include ReadFile
   include LibReduce
+  include Condition
 
   def self.discharge(degree = 7)
     # deg と axles
@@ -28,9 +30,9 @@ class Discharge
     }
 
     # LibReduce クラスのインスタンスを作る
-    i_reduce = LibReduce.new
-    i_reduce.r_axles[:low][0][3] = 7
-    p i_reduce.r_axles[:low][0]
+    reduce = LibReduce.new
+    reduce.r_axles[:low][0][3] = 7
+    p reduce.r_axles[:low][0]
 
     # Rules クラスのインスタンスを作る
     rules = Rules.new
@@ -44,10 +46,13 @@ class Discharge
     p tactics.tacs[2]
     p tactics.tacs[13]
 
+    # Condition クラスのインスタンスを作る
+    condition = Condition.new
+
     Assert.assertions = 0
     Assert.assert_equal (2 + 1), 3, 'fail1'
 
-    ret = main_loop i_reduce, rules, tactics
+    ret = main_loop reduce, condition, rules, tactics
     # final check
     if ret == 'Q.E.D.'
       puts "中心の次数 #{@deg} のグラフは、電荷が負になるか、近くに好配置があらわれるかです。"
@@ -56,7 +61,7 @@ class Discharge
     end
   end
 
-  def self.main_loop(i_reduce, _rules, tactics)
+  def self.main_loop(reduce, condition, _rules, tactics)
     p @axles[:lev]
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
@@ -71,13 +76,14 @@ class Discharge
         @axles[:lev] -= 1
       when 'R'
         puts 'Reduce.'
-        p i_reduce.update_reduce @deg, @axles
+        p reduce.update_reduce @deg, @axles
         @axles[:lev] -= 1
       when 'H'
         puts 'Hubcap.'
         @axles[:lev] -= 1
       when 'C'
         puts 'Condition.'
+        condition.update_condition1 1, 2, @axles
         @axles[:lev] += 1
       else
         Assert.assert_equal (1 == 2), true, "無効なtactic: #{tac}"
