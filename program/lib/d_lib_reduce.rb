@@ -36,8 +36,16 @@ module LibReduce
 
       noconf    = 633 # 好配置の個数
       num_axles = 1
+      num_break = 0
       while num_axles.positive? && num_axles < Const::MAXASTACK
         num_axles -= 1
+        num_break += 1
+
+        if num_break >= 4096
+          puts '<<<caution!>>> break 4096 loop!'
+          break
+        end
+
         puts 'Axle from stack:'
         get_adjmat   num_axles, deg
         get_edgelist num_axles, deg

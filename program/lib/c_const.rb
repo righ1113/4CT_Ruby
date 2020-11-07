@@ -8,6 +8,7 @@ module Const
   class Const
     MAXVAL     = 12
     CARTVERT   = 5 * MAXVAL + 2 # domain of l_A, u_A, where A is an axle
+    INFTY      = 12             # the "12" in the definition of limited part
     MAXELIST   = 134            # length of edgelist[a][b]
     MAXASTACK  = 5              # max height of Astack (see "Reduce")
     MAXLEV     = 12             # max level of an input line + 1

@@ -23,11 +23,17 @@ class Discharge
     # deg と axles
     @deg = degree
     puts "中心の次数 deg: #{@deg}"
+
+    # @axles の初期化
     @axles = {
       low: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
       upp: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
       lev: 0
     }
+    @axles[:low][0][0] = @deg
+    (5 * @deg).times { |n| @axles[:low][0][n + 1] = 5 }
+    @axles[:upp][0][0] = @deg
+    (5 * @deg).times { |n| @axles[:upp][0][n + 1] = Const::INFTY }
 
     # LibReduce クラスのインスタンスを作る
     reduce = LibReduce.new
@@ -83,7 +89,7 @@ class Discharge
         @axles[:lev] -= 1
       when 'C'
         puts 'Condition.'
-        condition.update_condition1 1, 2, @axles
+        condition.update_condition1 tac[2].to_i, tac[3].to_i, @axles
         @axles[:lev] += 1
       else
         Assert.assert_equal (1 == 2), true, "無効なtactic: #{tac}"

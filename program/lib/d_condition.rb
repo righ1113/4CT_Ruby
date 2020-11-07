@@ -11,6 +11,8 @@ module Condition
     include Const
 
     def update_condition1(n_ind, m_ind, axles)
+      p n_ind, m_ind
+
       axles[:low][axles[:lev] + 1] = axles[:low][axles[:lev]].deep_dup
       axles[:upp][axles[:lev] + 1] = axles[:upp][axles[:lev]].deep_dup
 
@@ -19,12 +21,12 @@ module Condition
 
       if m_ind.positive?
         # new lower bound
-        # Assert.assert_equal (a_low_n >= m_ind || m_ind > a_upp_n), false, 'Invalid lower bound in condition'
+        Assert.assert_equal (a_low_n >= m_ind || m_ind > a_upp_n), false, 'Invalid lower bound in condition'
         axles[:upp][axles[:lev]    ][n_ind] = m_ind - 1
         axles[:low][axles[:lev] + 1][n_ind] = m_ind
       else
         # new upper bound
-        # Assert.assert_equal (a_low_n > -m_ind || -m_ind >= a_upp_n), false, 'Invalid upper bound in condition'
+        Assert.assert_equal (a_low_n > -m_ind || -m_ind >= a_upp_n), false, 'Invalid upper bound in condition'
         axles[:low][axles[:lev]    ][n_ind] = 1 - m_ind
         axles[:upp][axles[:lev] + 1][n_ind] = -m_ind
       end
