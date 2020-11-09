@@ -20,7 +20,7 @@ class Discharge
   include Condition
 
   def self.discharge(degree = 7)
-    # deg と axles
+    # @deg
     @deg = degree
     puts "中心の次数 deg: #{@deg}"
 
@@ -90,6 +90,7 @@ class Discharge
       when 'C'
         puts 'Condition.'
         condition.update_condition1 tac[2].to_i, tac[3].to_i, @axles
+        condition.update_condition2 tac[2].to_i, tac[3].to_i, @axles, @deg, i + 1
         @axles[:lev] += 1
       else
         Assert.assert_equal (1 == 2), true, "無効なtactic: #{tac}"

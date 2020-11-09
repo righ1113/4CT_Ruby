@@ -10,6 +10,22 @@ module Condition
   class Condition
     include Const
 
+    def initialize
+      # インスタンス変数を作る
+      @sym_num = Array.new(Const::MAXSYM + 1, 0)
+      @sym_nol = Array.new(Const::MAXSYM + 1, 0)
+      @sym_val = Array.new(Const::MAXSYM + 1, 0)
+      @sym_pos = Array.new(Const::MAXSYM + 1, Array.new(17, 0))
+      @sym_low = Array.new(Const::MAXSYM + 1, Array.new(17, 0))
+      @sym_upp = Array.new(Const::MAXSYM + 1, Array.new(17, 0))
+      @sym_xxx = Array.new(Const::MAXSYM + 1, 0)
+
+      @nnn = Array.new(Const::MAXLEV, 0)
+      @mmm = Array.new(Const::MAXLEV, 0)
+
+      @nosym = 0
+    end
+
     def update_condition1(n_ind, m_ind, axles)
       p n_ind, m_ind
 
@@ -32,38 +48,31 @@ module Condition
       end
     end
 
-    def update_condition2
-      #      # remember symmetry unless contains a fan vertex
-      #      good = true
-      #      for i in 0..axles.lev do
-      #        if (nn.[i] > 2 * deg || nn.[i] < 1) then
-      #        # if (1 <= nn.[i] && nn.[i] <= 2 * deg) then
-      #          good = false
-      #      if good then # remember symmetry
-      #        Debug.Assert((nosym < MAXSYM), "Too many symmetries")
-      #        # T = &sym[nosym + 1];
-      #        sym.number.[nosym] <- lineno
-      #        sym.value.[nosym] <- 1
-      #        sym.nolines.[nosym] <- axles.lev + 1
-      #        for i in 0..axles.lev do
-      #          sym.pos.[nosym].[i] <- nn.[i]
-      #          if (mm.[i] > 0) then
-      #            sym.plow.[nosym].[i] <- mm.[i]
-      #            sym.pupp.[nosym].[i] <- INFTY
-      #          else
-      #            sym.plow.[nosym].[i] <- 5
-      #            sym.pupp.[nosym].[i] <- -mm.[i]
-      #
-      #      nn.[axles.lev]     <- n
-      #      nn.[axles.lev + 1] <- 0
-      #      mm.[axles.lev]     <- m
-      #      mm.[axles.lev + 1] <- 0
-      #
-      #      if good then
-      #        ((nn, mm), (axles.low, axles.upp, axles.lev), nosym + 1)
-      #      else
-      #        ((nn, mm), (axles.low, axles.upp, axles.lev), nosym)
-      #      end
+    def update_condition2(n_ind, m_ind, axles, deg, lineno)
+      # remember symmetry unless contains a fan vertex
+      good = true
+      (axles[:lev]).times { |i| good = false if @nnn[i] > 2 * deg || @nnn[i] < 1 }
+      if good # remember symmetry
+        Assert.assert_equal (@nosym < Const::MAXSYM), true, 'Too many symmetries'
+        @sym_num[@nosym] = lineno
+        @sym_val[@nosym] = 1
+        @sym_nol[@nosym] = axles[:lev] + 1
+        (axles[:lev]).times do |i|
+          @sym_pos[@nosym][i] = @nnn[i]
+          if @mmm[i].positive?
+            @sym_low[@nosym][i] = @mmm[i]
+            @sym_upp[@nosym][i] = Const::INFTY
+          else
+            @sym_low[@nosym][i] = 5
+            @sym_upp[@nosym][i] = @mmm[i]
+          end
+        end
+      end
+      @nnn[axles[:lev]]     = n_ind
+      @nnn[axles[:lev] + 1] = 0
+      @mmm[axles[:lev]]     = m_ind
+      @mmm[axles[:lev] + 1] = 0
+      @nosym += 1 if good
     end
   end
 end
