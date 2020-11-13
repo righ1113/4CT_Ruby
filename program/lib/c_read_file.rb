@@ -45,6 +45,10 @@ module ReadFile
 
     def read_file
       p 'Rules read_file() start & goal'
+      File.open('../4ct_data/d_rules.json') do |file|
+        @rules = JSON.load file # Hashに変換
+      end
+      p @rules[10]['z']
     end
   end
 
