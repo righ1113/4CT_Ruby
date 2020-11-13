@@ -14,3 +14,6 @@ CyclomaticComplexity:
 
 PerceivedComplexity:
   Max: 9
+
+Security/JSONLoad:
+  Enabled: false

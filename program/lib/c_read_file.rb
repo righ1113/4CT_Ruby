@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 # ReadFile モジュール
 module ReadFile
   # ReadFile スーパークラス
@@ -21,7 +23,11 @@ module ReadFile
     private
 
     def read_file
-      p self
+      File.open('../4ct_data/d_good_confs.json') do |file|
+        @g_confs = JSON.load file # Hashに変換
+      end
+      p @g_confs[10]
+      p @g_confs[10]['a']
     end
   end
 
