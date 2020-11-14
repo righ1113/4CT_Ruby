@@ -37,20 +37,14 @@ class Discharge
 
     # LibReduce クラスのインスタンスを作る
     reduce = LibReduce.new
-    reduce.r_axles[:low][0][3] = 7
-    p reduce.r_axles[:low][0]
+    # reduce.r_axles[:low][0][3] = 7
+    # p reduce.r_axles[:low][0]
 
     # Rules クラスのインスタンスを作る
     rules = Rules.new
-    p rules.dummy
 
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
-    p tactics.dummy
-    p tactics.tacs[0]
-    p tactics.tacs[1]
-    p tactics.tacs[2]
-    p tactics.tacs[13]
 
     # Condition クラスのインスタンスを作る
     condition = Condition.new
@@ -68,7 +62,6 @@ class Discharge
   end
 
   def self.main_loop(reduce, condition, _rules, tactics)
-    p @axles[:lev]
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
       break 'Q.E.D.' if tac[0] == 'Q.E.D.' && @axles[:lev] == -1

@@ -15,7 +15,7 @@ module LibReduce
 
     def initialize
       # 好配置を読み込む
-      GoodConfs.new
+      @g_confs = GoodConfs.new
 
       # インスタンス変数を作る
       @r_axles = {
