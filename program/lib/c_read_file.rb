@@ -2,6 +2,13 @@
 
 require 'json'
 
+# Rules クラスと LibReduce クラスから include される
+module GetAdjmat
+  private
+
+  def get_adjmat(num_axles, deg); end
+end
+
 # ReadFile モジュール
 module ReadFile
   # ReadFile スーパークラス
@@ -33,6 +40,8 @@ module ReadFile
 
   # sub class 2
   class Rules < ReadFile
+    include GetAdjmat
+
     attr_reader :dummy
 
     def initialize

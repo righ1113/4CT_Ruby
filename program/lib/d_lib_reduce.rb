@@ -9,6 +9,7 @@ module LibReduce
   class LibReduce
     include Const
     include ReadFile
+    include GetAdjmat
 
     attr_accessor :r_axles
 
@@ -92,8 +93,6 @@ module LibReduce
       puts 'All possibilities for lower degrees tested'
       true
     end
-
-    def get_adjmat(num_axles, deg); end
 
     def get_edgelist(num_axles, deg); end
   end
