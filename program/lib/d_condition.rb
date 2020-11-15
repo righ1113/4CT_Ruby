@@ -15,9 +15,9 @@ module Condition
       @sym_num = Array.new(Const::MAXSYM + 1, 0)
       @sym_nol = Array.new(Const::MAXSYM + 1, 0)
       @sym_val = Array.new(Const::MAXSYM + 1, 0)
-      @sym_pos = Array.new(Const::MAXSYM + 1, Array.new(17, 0))
-      @sym_low = Array.new(Const::MAXSYM + 1, Array.new(17, 0))
-      @sym_upp = Array.new(Const::MAXSYM + 1, Array.new(17, 0))
+      @sym_pos = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
+      @sym_low = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
+      @sym_upp = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
       @sym_xxx = Array.new(Const::MAXSYM + 1, 0)
 
       @nnn = Array.new(Const::MAXLEV, 0)

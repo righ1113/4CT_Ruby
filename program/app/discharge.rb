@@ -26,8 +26,8 @@ class Discharge
 
     # @axles の初期化
     @axles = {
-      low: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
-      upp: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
+      low: Array.new(Const::MAXLEV + 1) { Array.new(Const::CARTVERT, 0) },
+      upp: Array.new(Const::MAXLEV + 1) { Array.new(Const::CARTVERT, 0) },
       lev: 0
     }
     @axles[:low][0][0] = @deg
@@ -41,7 +41,7 @@ class Discharge
     # p reduce.r_axles[:low][0]
 
     # Rules クラスのインスタンスを作る
-    rules = Rules.new @axles
+    rules = Rules.new @deg, @axles
 
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new

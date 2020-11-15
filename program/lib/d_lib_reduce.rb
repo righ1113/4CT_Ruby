@@ -19,12 +19,12 @@ module LibReduce
 
       # インスタンス変数を作る
       @r_axles = {
-        low: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
-        upp: Array.new(Const::MAXLEV + 1, Array.new(Const::CARTVERT, 0)),
+        low: Array.new(Const::MAXLEV + 1) { Array.new(Const::CARTVERT, 0) },
+        upp: Array.new(Const::MAXLEV + 1) { Array.new(Const::CARTVERT, 0) },
         lev: 0
       }
-      @adjmat   = Array.new(Const::CARTVERT, Array.new(Const::CARTVERT, 0))
-      @edgelist = Array.new(12, Array.new(9, Array.new(Const::MAXELIST, 0)))
+      @adjmat   = Array.new(Const::CARTVERT) { Array.new(Const::CARTVERT, 0) }
+      @edgelist = Array.new(12) { Array.new(9) { Array.new(Const::MAXELIST, 0) } }
       @used     = Array.new(Const::CARTVERT, false)
       @image    = Array.new(Const::CARTVERT, 0)
     end
@@ -48,7 +48,7 @@ module LibReduce
         end
 
         puts 'Axle from stack:'
-        get_adjmat   num_axles, deg
+        get_adjmat deg, axles, num_axles, @adjmat
         get_edgelist num_axles, deg
         h = 0
         # for (h = 0; h < noconf; ++h)
