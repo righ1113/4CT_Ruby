@@ -17,3 +17,6 @@ PerceivedComplexity:
 
 Security/JSONLoad:
   Enabled: false
+
+Metrics/ParameterLists:
+  Max: 6

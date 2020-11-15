@@ -41,7 +41,7 @@ class Discharge
     # p reduce.r_axles[:low][0]
 
     # Rules クラスのインスタンスを作る
-    rules = Rules.new
+    rules = Rules.new @axles
 
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
