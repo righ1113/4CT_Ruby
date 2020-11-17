@@ -7,11 +7,66 @@ require 'json'
 
 # Rules クラスと LibReduce クラスから include される
 module GetAdjmat
+  include Const
+
   private
 
-  def get_adjmat(deg, axles, num_axles, adjmat); end
+  def get_adjmat(deg, axles, num_axles, adjmat)
+    Const::CARTVERT.times do |a|
+      Const::CARTVERT.times { |b| adjmat[a][b] = -1 }
+    end
+    deg.times do |ii|
+      i = ii + 1
+      h = i == 1 ? deg : i - 1
+      adjmat[0][h] = i
+      adjmat[i][0] = h
+      adjmat[h][i] = 0
+      a = deg + h
+      adjmat[i][h] = a
+      adjmat[a][i] = h
+      adjmat[h][a] = i
+      do_fan deg, i, axles[:upp][num_axles][i], adjmat if axles[:upp][num_axles][i] < 9
+    end
+  end
 
-  def do_fan(deg, iii, kkk, adjmat); end
+  def do_fan(deg, iii, kkk, adjmat)
+    i, k = iii, kkk
+    a = i == 1 ? 2 * deg : deg + i - 1
+    b = deg + i
+    if k == 5
+      adjmat[i][a] = b
+      adjmat[a][b] = i
+      adjmat[b][i] = a
+      return
+    end
+    c = 2 * deg + i
+    adjmat[i][a] = c
+    adjmat[a][c] = i
+    adjmat[c][i] = a
+    if k == 6
+      adjmat[i][c] = b
+      adjmat[c][b] = i
+      adjmat[b][i] = c
+      return
+    end
+    d = 3 * deg + i
+    adjmat[i][c] = d
+    adjmat[c][d] = i
+    adjmat[d][i] = c
+    if k == 7
+      adjmat[i][d] = b
+      adjmat[d][b] = i
+      adjmat[b][i] = d
+      return
+    end
+    e = 4 * deg + i
+    adjmat[i][d] = e
+    adjmat[d][e] = i
+    adjmat[e][i] = d
+    adjmat[i][e] = b
+    adjmat[e][b] = i
+    adjmat[b][i] = e
+  end
 end
 
 # ReadFile モジュール
@@ -94,8 +149,7 @@ module ReadFile
         if j >= 2	# now computing T->pos[i]
           u = phi[U[zzz[j]]]
           v = phi[V[zzz[j]]]
-          @pos[index][i] = @adjmat[u][v]
-          phi[zzz[j]]    = @adjmat[u][v]
+          @pos[index][i], phi[zzz[j]] = @adjmat[u][v], @adjmat[u][v]
         end
         u = @pos[index][i]
         # update adjmat

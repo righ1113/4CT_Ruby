@@ -26,3 +26,6 @@ Style/Next:
 
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
