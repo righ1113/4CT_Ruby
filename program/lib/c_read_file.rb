@@ -18,13 +18,9 @@ module GetAdjmat
     deg.times do |ii|
       i = ii + 1
       h = i == 1 ? deg : i - 1
-      adjmat[0][h] = i
-      adjmat[i][0] = h
-      adjmat[h][i] = 0
+      chg_adjmat adjmat, 0, h, i, :forward
       a = deg + h
-      adjmat[i][h] = a
-      adjmat[a][i] = h
-      adjmat[h][a] = i
+      chg_adjmat adjmat, i, h, a, :forward
       do_fan deg, i, axles[:upp][num_axles][i], adjmat if axles[:upp][num_axles][i] < 9
     end
   end
@@ -33,39 +29,37 @@ module GetAdjmat
     i, k = iii, kkk
     a = i == 1 ? 2 * deg : deg + i - 1
     b = deg + i
-    if k == 5
-      adjmat[i][a] = b
-      adjmat[a][b] = i
-      adjmat[b][i] = a
-      return
-    end
     c = 2 * deg + i
-    adjmat[i][a] = c
-    adjmat[a][c] = i
-    adjmat[c][i] = a
-    if k == 6
-      adjmat[i][c] = b
-      adjmat[c][b] = i
-      adjmat[b][i] = c
-      return
-    end
     d = 3 * deg + i
-    adjmat[i][c] = d
-    adjmat[c][d] = i
-    adjmat[d][i] = c
-    if k == 7
-      adjmat[i][d] = b
-      adjmat[d][b] = i
-      adjmat[b][i] = d
-      return
-    end
     e = 4 * deg + i
-    adjmat[i][d] = e
-    adjmat[d][e] = i
-    adjmat[e][i] = d
-    adjmat[i][e] = b
-    adjmat[e][b] = i
-    adjmat[b][i] = e
+    case k
+    when 5
+      chg_adjmat adjmat, i, a, b, :backward
+    when 6
+      chg_adjmat adjmat, i, a, c, :backward
+      chg_adjmat adjmat, i, c, b, :backward
+    when 7
+      chg_adjmat adjmat, i, a, c, :backward
+      chg_adjmat adjmat, i, c, d, :backward
+      chg_adjmat adjmat, i, d, b, :backward
+    else
+      chg_adjmat adjmat, i, a, c, :backward
+      chg_adjmat adjmat, i, c, d, :backward
+      chg_adjmat adjmat, i, d, e, :backward
+      chg_adjmat adjmat, i, e, b, :backward
+    end
+  end
+
+  def chg_adjmat(adjmat, aaa, bbb, ccc, way)
+    a, b, c = aaa, bbb, ccc
+    adjmat[a][b] = c
+    if way == :forward
+      adjmat[c][a] = b
+      adjmat[b][c] = a
+    else
+      adjmat[b][c] = a
+      adjmat[c][a] = b
+    end
   end
 end
 
@@ -110,13 +104,13 @@ module ReadFile
       super
 
       # インスタンス変数を作る
-      @num = Array.new(Const::MAXSYM + 1, 0)
-      @nol = Array.new(Const::MAXSYM + 1, 0)
-      @val = Array.new(Const::MAXSYM + 1, 0)
-      @pos = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
-      @low = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
-      @upp = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
-      @xxx = Array.new(Const::MAXSYM + 1, 0)
+      @num = Array.new(2 * Const::MAXOUTLETS, 0)
+      @nol = Array.new(2 * Const::MAXOUTLETS, 0)
+      @val = Array.new(2 * Const::MAXOUTLETS, 0)
+      @pos = Array.new(2 * Const::MAXOUTLETS) { Array.new(17, 0) }
+      @low = Array.new(2 * Const::MAXOUTLETS) { Array.new(17, 0) }
+      @upp = Array.new(2 * Const::MAXOUTLETS) { Array.new(17, 0) }
+      @xxx = Array.new(2 * Const::MAXOUTLETS, 0)
 
       @adjmat = Array.new(Const::CARTVERT) { Array.new(Const::CARTVERT, 0) }
 
@@ -124,6 +118,32 @@ module ReadFile
     end
 
     private
+
+    def read_file(deg, axles)
+      p 'Rules read_file() start'
+      rules = nil
+      File.open('../4ct_data/d_rules.json') do |file|
+        rules = JSON.load file # Hashに変換
+      end
+      # p rules[10]['z']
+
+      # set data
+      index = 0
+      rules.each do |line|
+        index += 1 if do_outlet deg, axles,  line['z'][1], line['z'], line['b'], index
+        index += 1 if do_outlet deg, axles, -line['z'][1], line['z'], line['b'], index
+      end
+      # データを2回重ねる
+      index.times do |i|
+        @num[i + index] = @num[i]
+        @nol[i + index] = @nol[i]
+        @val[i + index] = @val[i]
+        @pos[i + index] = @pos[i].deep_dup
+        @low[i + index] = @low[i].deep_dup
+        @upp[i + index] = @upp[i].deep_dup
+        @xxx[i + index] = @xxx[i]
+      end
+    end
 
     def do_outlet(deg, axles, number, zzz, bbb, index)
       get_adjmat deg, axles, axles[:lev], @adjmat
@@ -157,33 +177,7 @@ module ReadFile
         i += 1
       end
       # Condition (T4) is checked in CheckIso
-      false
-    end
-
-    def read_file(deg, axles)
-      p 'Rules read_file() start'
-      rules = nil
-      File.open('../4ct_data/d_rules.json') do |file|
-        rules = JSON.load file # Hashに変換
-      end
-      # p rules[10]['z']
-
-      # set data
-      index = 0
-      rules.each do |line|
-        index += 1 if do_outlet deg, axles,  line['z'][1], line['z'], line['b'], index
-        index += 1 if do_outlet deg, axles, -line['z'][1], line['z'], line['b'], index
-      end
-      # データを2回重ねる
-      index.times do |i|
-        @num[i + index] = @num[i]
-        @nol[i + index] = @nol[i]
-        @val[i + index] = @val[i]
-        @pos[i + index] = @pos[i].deep_dup
-        @low[i + index] = @low[i].deep_dup
-        @upp[i + index] = @upp[i].deep_dup
-        @xxx[i + index] = @xxx[i]
-      end
+      true
     end
   end
 
