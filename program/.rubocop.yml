@@ -10,7 +10,7 @@ AbcSize:
   Max: 71
 
 CyclomaticComplexity:
-  Max: 11
+  Max: 12
 
 PerceivedComplexity:
   Max: 9
@@ -29,3 +29,6 @@ Layout/EmptyLineAfterGuardClause:
 
 Style/ParallelAssignment:
   Enabled: false
+
+Metrics/BlockLength:
+  Max: 30

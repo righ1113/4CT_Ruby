@@ -117,6 +117,14 @@ module ReadFile
       read_file deg, axles
     end
 
+    def update_hubcap(deg, axles, tac_v)
+      # 1. omitted
+      # 2. omitted
+      # 3. omitted
+      # 4. omitted
+      # 5.
+    end
+
     private
 
     def read_file(deg, axles)

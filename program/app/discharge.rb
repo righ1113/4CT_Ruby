@@ -61,7 +61,7 @@ class Discharge
     end
   end
 
-  def self.main_loop(reduce, condition, _rules, tactics)
+  def self.main_loop(reduce, condition, rules, tactics)
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
       break 'Q.E.D.' if tac[0] == 'Q.E.D.' && @axles[:lev] == -1
@@ -79,6 +79,8 @@ class Discharge
         @axles[:lev] -= 1
       when 'H'
         puts 'Hubcap.'
+        # p (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
+        rules.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
         @axles[:lev] -= 1
       when 'C'
         puts 'Condition.'
