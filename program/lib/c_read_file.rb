@@ -97,8 +97,9 @@ module ReadFile
     include Const
     include GetAdjmat
 
-    U = [0, 0, 0, 1, 0, 3, 2, 1, 4, 3, 8, 3, 0, 0, 5, 6, 15].freeze
-    V = [0, 0, 1, 0, 2, 0, 1, 3, 2, 5, 2, 9, 4, 12, 0, 1, 1].freeze
+    U        = [0, 0, 0, 1, 0, 3, 2, 1, 4, 3, 8, 3, 0, 0, 5, 6, 15].freeze
+    V        = [0, 0, 1, 0, 2, 0, 1, 3, 2, 5, 2, 9, 4, 12, 0, 1, 1].freeze
+    DIFNOUTS = [0, 0, 0, 0, 0, 0, 0, 103, 103, 103, 103, 103].freeze
 
     def initialize(deg, axles)
       super
@@ -123,6 +124,19 @@ module ReadFile
       # 3. omitted
       # 4. omitted
       # 5.
+      nouts = DIFNOUTS[deg]
+      s = Array.new(2 * Const::MAXOUTLETS + 1)
+      tac_v.each do |xs|
+        puts "--> Checking hubcap member (#{xs[0]}, #{xs[1]}, #{xs[2]})"
+        (nouts - 1).times { |j| @xxx[j] = xs[0]; s[j] = 0 }
+        if xs[0] != xs[1]
+          (nouts - 1).times { |j| @xxx[nouts + j] = xs[1]; s[nouts + j] = 0 }
+          s[2 * nouts] = 99 # to indicate end of list
+        else
+          s[nouts] = 99 # to indicate end of list
+        end
+        update_bound s, xs[2], 0, 0, axles
+      end
     end
 
     private
@@ -186,6 +200,10 @@ module ReadFile
       end
       # Condition (T4) is checked in CheckIso
       true
+    end
+
+    def update_bound(sss, xs2, iii, jjj, axles)
+      # aaaaaaaaaa
     end
   end
 
