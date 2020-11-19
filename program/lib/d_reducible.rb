@@ -3,10 +3,10 @@
 require '../lib/c_const'
 require '../lib/c_read_file'
 
-# LibReduce モジュール
-module LibReduce
-  # LibReduce クラス
-  class LibReduce
+# Reducible モジュール
+module Reducible
+  # Reducible クラス
+  class Reducible
     include Const
     include ReadFile
     include GetAdjmat
@@ -29,7 +29,7 @@ module LibReduce
       @image    = Array.new(Const::CARTVERT, 0)
     end
 
-    def update_reduce(deg, axles)
+    def update_reducible(deg, axles)
       r_axles[:low][0] = axles[:low][axles[:lev]]
       r_axles[:upp][0] = axles[:upp][axles[:lev]]
 

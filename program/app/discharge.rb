@@ -9,14 +9,14 @@
 
 require '../lib/c_const'
 require '../lib/c_read_file'
-require '../lib/d_lib_reduce'
+require '../lib/d_reducible'
 require '../lib/d_condition'
 
 # LibReduce 他をインクルードするため、クラスにする
 class Discharge
   include Const
   include ReadFile
-  include LibReduce
+  include Reducible
   include Condition
 
   def self.discharge(degree = 7)
@@ -35,8 +35,8 @@ class Discharge
     @axles[:upp][0][0] = @deg
     (5 * @deg).times { |n| @axles[:upp][0][n + 1] = Const::INFTY }
 
-    # LibReduce クラスのインスタンスを作る
-    reduce = LibReduce.new
+    # Reducible クラスのインスタンスを作る
+    reducible = Reducible.new
     # reduce.r_axles[:low][0][3] = 7
     # p reduce.r_axles[:low][0]
 
@@ -52,7 +52,7 @@ class Discharge
     Assert.assertions = 0
     Assert.assert_equal (2 + 1), 3, 'fail1'
 
-    ret = main_loop reduce, condition, rules, tactics
+    ret = main_loop reducible, condition, rules, tactics
     # final check
     if ret == 'Q.E.D.'
       puts "中心の次数 #{@deg} のグラフは、電荷が負になるか、近くに好配置があらわれるかです。"
@@ -61,7 +61,7 @@ class Discharge
     end
   end
 
-  def self.main_loop(reduce, condition, rules, tactics)
+  def self.main_loop(reducible, condition, rules, tactics)
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
       break 'Q.E.D.' if tac[0] == 'Q.E.D.' && @axles[:lev] == -1
@@ -74,8 +74,8 @@ class Discharge
         puts 'Symmetry.'
         @axles[:lev] -= 1
       when 'R'
-        puts 'Reduce.'
-        p reduce.update_reduce @deg, @axles
+        puts 'Reducible.'
+        p reducible.update_reducible @deg, @axles
         @axles[:lev] -= 1
       when 'H'
         puts 'Hubcap.'
