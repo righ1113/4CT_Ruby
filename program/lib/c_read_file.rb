@@ -125,7 +125,7 @@ module ReadFile
       # 4. omitted
       # 5.
       nouts = DIFNOUTS[deg]
-      s = Array.new(2 * Const::MAXOUTLETS + 1)
+      s = Array.new(2 * Const::MAXOUTLETS + 1, 0)
       tac_v.each do |xs|
         puts "--> Checking hubcap member (#{xs[0]}, #{xs[1]}, #{xs[2]})"
         (nouts - 1).times { |j| @xxx[j] = xs[0]; s[j] = 0 }
@@ -135,7 +135,7 @@ module ReadFile
         else
           s[nouts] = 99 # to indicate end of list
         end
-        update_bound s, xs[2], 0, 0, axles
+        update_bound s, xs[2], 0, 0, deg, axles
       end
     end
 
@@ -202,8 +202,31 @@ module ReadFile
       true
     end
 
-    def update_bound(sss, xs2, iii, jjj, axles)
-      # aaaaaaaaaa
+    def update_bound(sss, maxch, pos, depth, deg, axles)
+      # 1. compute forced and permitted rules, allowedch, forcedch, update s
+      forcedch = 0; allowedch = 0; i = -1
+      posout = nil
+      while sss[i] < 99
+        i += 1
+        forcedch += @val[i] if sss[i].positive?
+        next if sss[i] != 0
+        if !(outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], posout).zero?
+          sss[i] = 1
+          forcedch += @val[i]
+        elsif (outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], posout).zero?
+          sss[i] = -1
+        elsif @val[i].positive?
+          allowedch += @val[i]
+        end
+      end
+    end
+
+    def outlet_forced(axles_low, axles_upp, posout)
+      1
+    end
+
+    def outlet_permitted(axles_low, axles_upp, posout)
+      1
     end
   end
 
