@@ -7,7 +7,7 @@ AsciiComments:
   Enabled: false
 
 AbcSize:
-  Max: 71
+  Max: 72
 
 CyclomaticComplexity:
   Max: 12

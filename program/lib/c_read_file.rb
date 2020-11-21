@@ -105,13 +105,16 @@ module ReadFile
       super
 
       # インスタンス変数を作る
-      @num = Array.new(2 * Const::MAXOUTLETS, 0)
-      @nol = Array.new(2 * Const::MAXOUTLETS, 0)
-      @val = Array.new(2 * Const::MAXOUTLETS, 0)
-      @pos = Array.new(2 * Const::MAXOUTLETS) { Array.new(17, 0) }
-      @low = Array.new(2 * Const::MAXOUTLETS) { Array.new(17, 0) }
-      @upp = Array.new(2 * Const::MAXOUTLETS) { Array.new(17, 0) }
-      @xxx = Array.new(2 * Const::MAXOUTLETS, 0)
+      posout0 = {
+        num: 0,
+        nol: 0,
+        val: 0,
+        pos: Array.new(17, 0),
+        low: Array.new(17, 0),
+        upp: Array.new(17, 0),
+        xxx: 0
+      }
+      @posout = Array.new(2 * Const::MAXOUTLETS) { posout0 }
 
       @adjmat = Array.new(Const::CARTVERT) { Array.new(Const::CARTVERT, 0) }
 
@@ -128,9 +131,9 @@ module ReadFile
       s = Array.new(2 * Const::MAXOUTLETS + 1, 0)
       tac_v.each do |xs|
         puts "--> Checking hubcap member (#{xs[0]}, #{xs[1]}, #{xs[2]})"
-        (nouts - 1).times { |j| @xxx[j] = xs[0]; s[j] = 0 }
+        (nouts - 1).times { |j| @posout[j][:xxx] = xs[0]; s[j] = 0 }
         if xs[0] != xs[1]
-          (nouts - 1).times { |j| @xxx[nouts + j] = xs[1]; s[nouts + j] = 0 }
+          (nouts - 1).times { |j| @posout[nouts + j][:xxx] = xs[1]; s[nouts + j] = 0 }
           s[2 * nouts] = 99 # to indicate end of list
         else
           s[nouts] = 99 # to indicate end of list
@@ -157,75 +160,76 @@ module ReadFile
       end
       # データを2回重ねる
       index.times do |i|
-        @num[i + index] = @num[i]
-        @nol[i + index] = @nol[i]
-        @val[i + index] = @val[i]
-        @pos[i + index] = @pos[i].deep_dup
-        @low[i + index] = @low[i].deep_dup
-        @upp[i + index] = @upp[i].deep_dup
-        @xxx[i + index] = @xxx[i]
+        @posout[i + index][:num] = @posout[i][:num]
+        @posout[i + index][:nol] = @posout[i][:nol]
+        @posout[i + index][:val] = @posout[i][:val]
+        @posout[i + index][:pos] = @posout[i][:pos].deep_dup
+        @posout[i + index][:low] = @posout[i][:low].deep_dup
+        @posout[i + index][:upp] = @posout[i][:upp].deep_dup
+        @posout[i + index][:xxx] = @posout[i][:xxx]
       end
     end
 
     def do_outlet(deg, axles, number, zzz, bbb, index)
       get_adjmat deg, axles, axles[:lev], @adjmat
-      @nol[index] = zzz[0] - 1
-      @num[index] = number
+      now_pos = @posout[index]
+      now_pos[:nol] = zzz[0] - 1
+      now_pos[:num] = number
       phi = []
       k   = 0
       17.times { |i| phi[i] = -1 }
-      phi[0], phi[1], @val[index], k = number.positive? ? [1, 0, 1, 1] : [0, 1, -1, 0]
-      @pos[index][0] = 1
+      phi[0], phi[1], now_pos[:val], k = number.positive? ? [1, 0, 1, 1] : [0, 1, -1, 0]
+      now_pos[:pos][0] = 1
       # compute phi
       i = 0
       zzz[0].times do |j|
-        @low[index][i] = bbb[j] / 10
-        @upp[index][i] = bbb[j] % 10
-        @upp[index][i] = Const::INFTY   if @upp[index][i] == 9
-        @low[index][i] = @upp[index][i] if @low[index][i].zero?
+        now_pos[:low][i] = bbb[j] / 10
+        now_pos[:upp][i] = bbb[j] % 10
+        now_pos[:upp][i] = Const::INFTY if now_pos[:upp][i] == 9
+        now_pos[:low][i] = now_pos[:upp][i] if now_pos[:low][i].zero?
         if j == k
-          return false unless deg.between?(@low[index][k], @upp[index][k])
+          return false unless deg.between?(now_pos[:low][k], now_pos[:upp][k])
           # if above true then outlet cannot apply for this degree
           next
         end
         if j >= 2	# now computing T->pos[i]
           u = phi[U[zzz[j]]]
           v = phi[V[zzz[j]]]
-          @pos[index][i], phi[zzz[j]] = @adjmat[u][v], @adjmat[u][v]
+          now_pos[:pos][i], phi[zzz[j]] = @adjmat[u][v], @adjmat[u][v]
         end
-        u = @pos[index][i]
+        u = now_pos[:pos][i]
         # update adjmat
-        do_fan deg, u, axles[:upp][axles[:lev]][i], @adjmat if u <= deg && @low[index][i] == @upp[index][i]
+        do_fan deg, u, axles[:upp][axles[:lev]][i], @adjmat if u <= deg && now_pos[:low][i] == now_pos[:upp][i]
         i += 1
       end
       # Condition (T4) is checked in CheckIso
       true
     end
 
-    def update_bound(sss, maxch, pos, depth, deg, axles)
+    def update_bound(sss, _maxch, _pos, _depth, _deg, axles)
       # 1. compute forced and permitted rules, allowedch, forcedch, update s
       forcedch = 0; allowedch = 0; i = -1
       posout = nil
       while sss[i] < 99
         i += 1
-        forcedch += @val[i] if sss[i].positive?
+        forcedch += @posout[i][:val] if sss[i].positive?
         next if sss[i] != 0
         if !(outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], posout).zero?
           sss[i] = 1
-          forcedch += @val[i]
+          forcedch += @posout[i][:val]
         elsif (outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], posout).zero?
           sss[i] = -1
-        elsif @val[i].positive?
-          allowedch += @val[i]
+        elsif @posout[i][:val].positive?
+          allowedch += @posout[i][:val]
         end
       end
     end
 
-    def outlet_forced(axles_low, axles_upp, posout)
+    def outlet_forced(_axles_low, _axles_upp, _posout)
       1
     end
 
-    def outlet_permitted(axles_low, axles_upp, posout)
+    def outlet_permitted(_axles_low, _axles_upp, _posout)
       1
     end
   end

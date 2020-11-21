@@ -12,13 +12,16 @@ module Condition
 
     def initialize
       # インスタンス変数を作る
-      @sym_num = Array.new(Const::MAXSYM + 1, 0)
-      @sym_nol = Array.new(Const::MAXSYM + 1, 0)
-      @sym_val = Array.new(Const::MAXSYM + 1, 0)
-      @sym_pos = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
-      @sym_low = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
-      @sym_upp = Array.new(Const::MAXSYM + 1) { Array.new(17, 0) }
-      @sym_xxx = Array.new(Const::MAXSYM + 1, 0)
+      sym0 = {
+        num: 0,
+        nol: 0,
+        val: 0,
+        pos: Array.new(17, 0),
+        low: Array.new(17, 0),
+        upp: Array.new(17, 0),
+        xxx: 0
+      }
+      @sym = Array.new(Const::MAXSYM + 1) { sym0 }
 
       @nnn = Array.new(Const::MAXLEV, 0)
       @mmm = Array.new(Const::MAXLEV, 0)
@@ -54,17 +57,17 @@ module Condition
       (axles[:lev]).times { |i| good = false unless @nnn[i].between?(1, 2 * deg) }
       if good # remember symmetry
         Assert.assert_equal (@nosym < Const::MAXSYM), true, 'Too many symmetries'
-        @sym_num[@nosym] = lineno
-        @sym_val[@nosym] = 1
-        @sym_nol[@nosym] = axles[:lev] + 1
+        @sym[@nosym][:num] = lineno
+        @sym[@nosym][:val] = 1
+        @sym[@nosym][:nol] = axles[:lev] + 1
         (axles[:lev]).times do |i|
-          @sym_pos[@nosym][i] = @nnn[i]
+          @sym[@nosym][:pos][i] = @nnn[i]
           if @mmm[i].positive?
-            @sym_low[@nosym][i] = @mmm[i]
-            @sym_upp[@nosym][i] = Const::INFTY
+            @sym[@nosym][:low][i] = @mmm[i]
+            @sym[@nosym][:upp][i] = Const::INFTY
           else
-            @sym_low[@nosym][i] = 5
-            @sym_upp[@nosym][i] = @mmm[i]
+            @sym[@nosym][:low][i] = 5
+            @sym[@nosym][:upp][i] = @mmm[i]
           end
         end
       end
