@@ -42,8 +42,8 @@ class Discharge
     # reduce.r_axles[:low][0][3] = 7
     # p reduce.r_axles[:low][0]
 
-    # Rules クラスのインスタンスを作る
-    rules = Rules.new @deg, @axles
+    # Hubcap < Rules クラスのインスタンスを作る
+    hubcap = Hubcap.new @deg, @axles
 
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
@@ -54,7 +54,7 @@ class Discharge
     Assert.assertions = 0
     Assert.assert_equal (2 + 1), 3, 'fail1'
 
-    ret = main_loop reducible, condition, rules, tactics
+    ret = main_loop reducible, condition, hubcap, tactics
     # final check
     if ret == 'Q.E.D.'
       puts "中心の次数 #{@deg} のグラフは、電荷が負になるか、近くに好配置があらわれるかです。"
@@ -63,7 +63,7 @@ class Discharge
     end
   end
 
-  def self.main_loop(reducible, condition, rules, tactics)
+  def self.main_loop(reducible, condition, hubcap, tactics)
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
       break 'Q.E.D.' if tac[0] == 'Q.E.D.' && @axles[:lev] == -1
@@ -82,7 +82,7 @@ class Discharge
       when 'H'
         puts 'Hubcap.'
         # p (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
-        rules.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
+        hubcap.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
         @axles[:lev] -= 1
       when 'C'
         puts 'Condition.'

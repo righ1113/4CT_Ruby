@@ -2,11 +2,12 @@
 
 require '../lib/c_const'
 require '../lib/c_read_file'
+require '../lib/d_symmetry'
 require 'active_support'
 require 'active_support/core_ext'
 require 'json'
 
-# Rules クラスと LibReduce クラスから include される
+# Rules クラスと Reducible クラスから include される
 module GetAdjmat
   include Const
 
@@ -96,27 +97,6 @@ module Rules
       read_file deg, axles
     end
 
-    def update_hubcap(deg, axles, tac_v)
-      # 1. omitted
-      # 2. omitted
-      # 3. omitted
-      # 4. omitted
-      # 5.
-      nouts = DIFNOUTS[deg]
-      s = Array.new(2 * Const::MAXOUTLETS + 1, 0)
-      tac_v.each do |xs|
-        puts "--> Checking hubcap member (#{xs[0]}, #{xs[1]}, #{xs[2]})"
-        (nouts - 1).times { |j| @posout[j][:xxx] = xs[0]; s[j] = 0 }
-        if xs[0] != xs[1]
-          (nouts - 1).times { |j| @posout[nouts + j][:xxx] = xs[1]; s[nouts + j] = 0 }
-          s[2 * nouts] = 99 # to indicate end of list
-        else
-          s[nouts] = 99 # to indicate end of list
-        end
-        update_bound s, xs[2], 0, 0, deg, axles
-      end
-    end
-
     private
 
     def read_file(deg, axles)
@@ -180,6 +160,36 @@ module Rules
       # Condition (T4) is checked in CheckIso
       true
     end
+  end
+
+  # Rules をさらに継承する
+  class Hubcap < Rules
+    # include Const もいらない
+    # def initialize(deg, axles) もいらない
+    include Symmetry
+
+    def update_hubcap(deg, axles, tac_v)
+      # 1. omitted
+      # 2. omitted
+      # 3. omitted
+      # 4. omitted
+      # 5.
+      nouts = DIFNOUTS[deg]
+      s = Array.new(2 * Const::MAXOUTLETS + 1, 0)
+      tac_v.each do |xs|
+        puts "--> Checking hubcap member (#{xs[0]}, #{xs[1]}, #{xs[2]})"
+        (nouts - 1).times { |j| @posout[j][:xxx] = xs[0]; s[j] = 0 }
+        if xs[0] != xs[1]
+          (nouts - 1).times { |j| @posout[nouts + j][:xxx] = xs[1]; s[nouts + j] = 0 }
+          s[2 * nouts] = 99 # to indicate end of list
+        else
+          s[nouts] = 99 # to indicate end of list
+        end
+        update_bound s, xs[2], 0, 0, deg, axles
+      end
+    end
+
+    private
 
     def update_bound(sss, _maxch, _pos, _depth, _deg, axles)
       # 1. compute forced and permitted rules, allowedch, forcedch, update s
@@ -188,23 +198,15 @@ module Rules
         i += 1
         forcedch += @posout[i][:val] if sss[i].positive?
         next if sss[i] != 0
-        if !(outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i]).zero?
+        if !(Symmetry.outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i]).zero?
           sss[i] = 1
           forcedch += @posout[i][:val]
-        elsif (outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i]).zero?
+        elsif (Symmetry.outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i]).zero?
           sss[i] = -1
         elsif @posout[i][:val].positive?
           allowedch += @posout[i][:val]
         end
       end
-    end
-
-    def outlet_forced(_axles_low, _axles_upp, _pos_i)
-      1
-    end
-
-    def outlet_permitted(_axles_low, _axles_upp, _pos_i)
-      1
     end
   end
 end
