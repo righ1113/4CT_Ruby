@@ -9,6 +9,7 @@
 
 require '../lib/c_const'
 require '../lib/c_read_file'
+require '../lib/d_rules'
 require '../lib/d_reducible'
 require '../lib/d_condition'
 
@@ -16,6 +17,7 @@ require '../lib/d_condition'
 class Discharge
   include Const
   include ReadFile
+  include Rules
   include Reducible
   include Condition
 
