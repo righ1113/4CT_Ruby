@@ -191,7 +191,7 @@ module Rules
 
     private
 
-    def update_bound(sss, _maxch, _pos, _depth, _deg, axles)
+    def update_bound(sss, maxch, _pos, depth, _deg, axles)
       # 1. compute forced and permitted rules, allowedch, forcedch, update s
       forcedch = 0; allowedch = 0; i = -1
       while sss[i] < 99
@@ -206,6 +206,32 @@ module Rules
         elsif @posout[i][:val].positive?
           allowedch += @posout[i][:val]
         end
+      end
+
+      # 2.
+      print "#{depth} POs: "
+      i = -1
+      while sss[i] < 99
+        i += 1
+        next if sss[i].positive?
+        print '?' if sss[i].zero?
+        puts "#{posout[i][:num]}, #{posout[i][:xxx]}"
+      end
+      p ''
+
+      # 3. check if inequality holds
+      if forcedch + allowedch <= maxch
+        puts "#{depth} Inequality holds. Case done."
+        return true
+      end
+
+      # 4. check reducibility
+      if forcedch > maxch
+        # ret = LibDischargeReduce.Reduce(ref rP1, ref rP2, axles);
+        # Debug.Assert(ret.retB,
+        #   "Incorrect hubcap upper bound");
+        puts "#{forcedch} #{allowedch} #{maxch} Reducible. Case done."
+        # return true
       end
     end
   end

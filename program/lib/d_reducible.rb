@@ -78,7 +78,7 @@ module Reducible
 
         ((redring + 1)..redverts).each do |i|
           v = i # image[i]
-          r_axles[:low][num_axles][v] == r_axles[:upp][num_axles][v] && next
+          next if r_axles[:low][num_axles][v] == r_axles[:upp][num_axles][v]
           puts 'Lowering upper bound of vertex'
           p 'fuga' # ("{0} to {1} and adding to stack\n", v, aStack.axle.upp[num_axles][v] - 1);
 

@@ -37,24 +37,22 @@ class Discharge
     @axles[:upp][0][0] = @deg
     (5 * @deg).times { |n| @axles[:upp][0][n + 1] = Const::INFTY }
 
-    # Reducible クラスのインスタンスを作る
-    reducible = Reducible.new
-    # reduce.r_axles[:low][0][3] = 7
-    # p reduce.r_axles[:low][0]
+    # Condition クラスのインスタンスを作る
+    condition = Condition.new
 
     # Hubcap < Rules クラスのインスタンスを作る
     hubcap = Hubcap.new @deg, @axles
 
+    # Reducible クラスのインスタンスを作る
+    reducible = Reducible.new
+
     # Tactics クラスのインスタンスを作る
     tactics = Tactics.new
-
-    # Condition クラスのインスタンスを作る
-    condition = Condition.new
 
     Assert.assertions = 0
     Assert.assert_equal (2 + 1), 3, 'fail1'
 
-    ret = main_loop reducible, condition, hubcap, tactics
+    ret = main_loop condition, hubcap, reducible, tactics
     # final check
     if ret == 'Q.E.D.'
       puts "中心の次数 #{@deg} のグラフは、電荷が負になるか、近くに好配置があらわれるかです。"
@@ -63,7 +61,7 @@ class Discharge
     end
   end
 
-  def self.main_loop(reducible, condition, hubcap, tactics)
+  def self.main_loop(condition, hubcap, reducible, tactics)
     tactics.tacs.each_with_index do |tac, i|
       # 下に空行を入れるらしい
       break 'Q.E.D.' if tac[0] == 'Q.E.D.' && @axles[:lev] == -1
@@ -72,23 +70,22 @@ class Discharge
       case tac[1]
       when '7', '8', '9', '10', '11'
         puts '0th line.'
-      when 'S'
-        puts 'Symmetry.'
-        @axles[:lev] -= 1
-      when 'R'
-        puts 'Reducible.'
-        p reducible.update_reducible @deg, @axles
-        @axles[:lev] -= 1
-      when 'H'
-        puts 'Hubcap.'
-        # p (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
-        hubcap.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
-        @axles[:lev] -= 1
       when 'C'
         puts 'Condition.'
         condition.update_condition1 tac[2].to_i, tac[3].to_i, @axles
         condition.update_condition2 tac[2].to_i, tac[3].to_i, @axles, @deg, i + 1
         @axles[:lev] += 1
+      when 'H'
+        puts 'Hubcap.'
+        hubcap.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
+        @axles[:lev] -= 1
+      when 'R'
+        puts 'Reducible.'
+        p reducible.update_reducible @deg, @axles
+        @axles[:lev] -= 1
+      when 'S'
+        puts 'Symmetry.'
+        @axles[:lev] -= 1
       else
         Assert.assert_equal (1 == 2), true, "無効なtactic: #{tac}"
       end
