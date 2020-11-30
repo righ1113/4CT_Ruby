@@ -1,25 +1,25 @@
 MethodLength:
   CountComments: false  # count full line comments?
-  Max: 47
+  Max: 80
 
 # Use only ascii symbols in comments.
 AsciiComments:
   Enabled: false
 
 AbcSize:
-  Max: 72
+  Max: 177
 
 CyclomaticComplexity:
-  Max: 12
+  Max: 23
 
 PerceivedComplexity:
-  Max: 14
+  Max: 25
 
 Security/JSONLoad:
   Enabled: false
 
 Metrics/ParameterLists:
-  Max: 6
+  Max: 9
 
 Style/Next:
   Enabled: false

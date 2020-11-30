@@ -191,7 +191,7 @@ module Rules
 
     private
 
-    def update_bound(sss, maxch, _pos, depth, _deg, axles)
+    def update_bound(sss, maxch, pos, depth, deg, axles)
       # 1. compute forced and permitted rules, allowedch, forcedch, update s
       forcedch = 0; allowedch = 0; i = -1
       while sss[i] < 99
@@ -215,7 +215,7 @@ module Rules
         i += 1
         next if sss[i].positive?
         print '?' if sss[i].zero?
-        puts "#{posout[i][:num]}, #{posout[i][:xxx]}"
+        puts "#{@posout[i][:num]}, #{@posout[i][:xxx]}"
       end
       p ''
 
@@ -233,6 +233,71 @@ module Rules
         puts "#{forcedch} #{allowedch} #{maxch} Reducible. Case done."
         # return true
       end
+
+      # 5.
+      return true if update_bound_sub5 sss, maxch, pos, depth, deg, axles, forcedch, allowedch
+      # 6.
+      Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
+      false
+    end
+
+    def update_bound_sub5(sss, maxch, pos, depth, deg, axles, forcedch, allowedch)
+      # 5.
+      pos -= 1
+      while sss[pos] < 99
+        pos += 1
+        next if sss[pos] != 0 || @posout[pos][:val].positive?
+        x = @posout[pos][:xxx]
+
+        # accepting positioned outlet PO, computing AA
+        axles2 = {
+          low: Array.new(Const::MAXLEV + 1) { Array.new(Const::CARTVERT, 0) },
+          upp: Array.new(Const::MAXLEV + 1) { Array.new(Const::CARTVERT, 0) },
+          lev: axles[:lev]
+        }
+        axles2[:low] = axles[:low].deep_dup
+        axles2[:upp] = axles[:upp].deep_dup
+        @posout[pos][:nol].times do |k|
+          p = @posout[pos][:pos][k]
+          p = x - 1 + (p - 1) % deg < deg ? p + x - 1 : p + x - 1 - deg
+          axles2[:low][axles2[:lev]][p] = @posout[pos][:low][k] if @posout[pos][:low][k] > axles2[:low][axles2[:lev]][p]
+          axles2[:upp][axles2[:lev]][p] = @posout[pos][:upp][k] if @posout[pos][:upp][k] < axles2[:upp][axles2[:lev]][p]
+          Assert.assert_equal (axles2[:low][axles2[:lev]][p] <= axles2[:upp][axles2[:lev]][p]), true, 'Unexp error 321'
+        end
+
+        # Check if a previously rejected positioned outlet is forced to apply
+        good = 1
+        pos.times do |ii|
+          check = !(Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii]).zero?
+          if sss[ii] == -1 && check
+            print "#{depth} Positioned outlet "
+            puts "#{@posout[pos][:num]}, #{x} can't be forced, b'z it forces #{@posout[ii][:num]}, #{@posout[ii][:xxx]}"
+            good = 0
+            break
+          end
+        end
+        unless good.zero?
+          # recursion with PO forced
+          s_prime = Array.new(2 * Const::MAXOUTLETS + 1, 0)
+          s_prime = sss.deep_dup
+          s_prime[pos] = 1
+          print "#{depth} Starting recursion with "
+          puts "#{@posout[pos][:num]}, #{x} forced"
+          update_bound s_prime, maxch, (pos + 1), (depth + 1), deg, axles2
+        end
+        # rejecting positioned outlet PO
+        puts "#{depth} Rejecting positioned outlet "
+        puts "#{@posout[pos][:num]}, #{x}"
+        sss[pos] = -1
+        allowedch -= @posout[pos][:val]
+        if allowedch + forcedch <= maxch
+          puts 'Inequality holds.'
+          return true
+        else
+          p ''
+        end
+      end
+      false
     end
   end
 end
