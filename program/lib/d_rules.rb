@@ -198,10 +198,10 @@ module Rules
         i += 1
         forcedch += @posout[i][:val] if sss[i].positive?
         next if sss[i] != 0
-        if !(Symmetry.outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i]).zero?
+        if !(Symmetry.outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i], deg).zero?
           sss[i] = 1
           forcedch += @posout[i][:val]
-        elsif (Symmetry.outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i]).zero?
+        elsif (Symmetry.outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i], deg).zero?
           sss[i] = -1
         elsif @posout[i][:val].positive?
           allowedch += @posout[i][:val]
@@ -215,9 +215,9 @@ module Rules
         i += 1
         next if sss[i].positive?
         print '?' if sss[i].zero?
-        puts "#{@posout[i][:num]}, #{@posout[i][:xxx]}"
+        print "#{@posout[i][:num]}, #{@posout[i][:xxx]} "
       end
-      p ''
+      puts ''
 
       # 3. check if inequality holds
       if forcedch + allowedch <= maxch
@@ -237,7 +237,8 @@ module Rules
       # 5.
       return true if update_bound_sub5 sss, maxch, pos, depth, deg, axles, forcedch, allowedch
       # 6.
-      Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
+      # Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
+      Assert.assert_equal (1 == 2), false, 'Unexpected error 101'
       false
     end
 
@@ -268,8 +269,8 @@ module Rules
         # Check if a previously rejected positioned outlet is forced to apply
         good = 1
         pos.times do |ii|
-          check = !(Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii]).zero?
-          if sss[ii] == -1 && check
+          chk = !(Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii], deg).zero?
+          if sss[ii] == -1 && chk
             print "#{depth} Positioned outlet "
             puts "#{@posout[pos][:num]}, #{x} can't be forced, b'z it forces #{@posout[ii][:num]}, #{@posout[ii][:xxx]}"
             good = 0
@@ -294,7 +295,7 @@ module Rules
           puts 'Inequality holds.'
           return true
         else
-          p ''
+          puts ''
         end
       end
       false
