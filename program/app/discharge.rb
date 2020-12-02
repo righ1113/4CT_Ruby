@@ -12,7 +12,6 @@ require '../lib/c_read_file'
 require '../lib/d_rules'
 require '../lib/d_reducible'
 require '../lib/d_condition'
-
 # LibReduce 他をインクルードするため、クラスにする
 class Discharge
   include Const

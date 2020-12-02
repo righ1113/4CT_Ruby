@@ -81,16 +81,17 @@ module Rules
       super
 
       # インスタンス変数を作る
-      posout0 = {
-        num: 0,
-        nol: 0,
-        val: 0,
-        pos: Array.new(17, 0),
-        low: Array.new(17, 0),
-        upp: Array.new(17, 0),
-        xxx: 0
-      }
-      @posout = Array.new(2 * Const::MAXOUTLETS) { posout0 }
+      @posout = Array.new(2 * Const::MAXOUTLETS) do
+        {
+          num: 0,
+          nol: 0,
+          val: 0,
+          pos: Array.new(17, 0),
+          low: Array.new(17, 0),
+          upp: Array.new(17, 0),
+          xxx: 0
+        }
+      end
 
       @adjmat = Array.new(Const::CARTVERT) { Array.new(Const::CARTVERT, 0) }
 

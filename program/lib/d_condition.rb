@@ -12,16 +12,17 @@ module Condition
 
     def initialize
       # インスタンス変数を作る
-      sym0 = {
-        num: 0,
-        nol: 0,
-        val: 0,
-        pos: Array.new(17, 0),
-        low: Array.new(17, 0),
-        upp: Array.new(17, 0),
-        xxx: 0
-      }
-      @sym = Array.new(Const::MAXSYM + 1) { sym0 }
+      @sym = Array.new(Const::MAXSYM + 1) do
+        {
+          num: 0,
+          nol: 0,
+          val: 0,
+          pos: Array.new(17, 0),
+          low: Array.new(17, 0),
+          upp: Array.new(17, 0),
+          xxx: 0
+        }
+      end
 
       @nnn = Array.new(Const::MAXLEV, 0)
       @mmm = Array.new(Const::MAXLEV, 0)
