@@ -194,12 +194,12 @@ module Rules
 
     def update_bound(sss, maxch, pos, depth, deg, axles)
       # 1. compute forced and permitted rules, allowedch, forcedch, update s
-      forcedch = 0; allowedch = 0; i = -1
+      forcedch = 0; allowedch = 0; i = 0
       while sss[i] < 99
-        i += 1
         forcedch += @posout[i][:val] if sss[i].positive?
-        next if sss[i] != 0
-        if !(Symmetry.outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i], deg).zero?
+        (i += 1; next) if sss[i] != 0
+        is_zero = (Symmetry.outlet_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i], deg).zero?
+        if !is_zero
           sss[i] = 1
           forcedch += @posout[i][:val]
         elsif (Symmetry.outlet_permitted axles[:low][axles[:lev]], axles[:upp][axles[:lev]], @posout[i], deg).zero?
@@ -207,16 +207,17 @@ module Rules
         elsif @posout[i][:val].positive?
           allowedch += @posout[i][:val]
         end
+        i += 1
       end
 
       # 2.
       print "#{depth} POs: "
-      i = -1
+      i = 0
       while sss[i] < 99
-        i += 1
-        next if sss[i].positive?
+        (i += 1; next) if sss[i].negative?
         print '?' if sss[i].zero?
-        print "#{@posout[i][:num]}, #{@posout[i][:xxx]} "
+        print "#{@posout[i][:num]},#{@posout[i][:xxx]} "
+        i += 1
       end
       puts ''
 
@@ -245,10 +246,8 @@ module Rules
 
     def update_bound_sub5(sss, maxch, pos, depth, deg, axles, forcedch, allowedch)
       # 5.
-      pos -= 1
       while sss[pos] < 99
-        pos += 1
-        next if sss[pos] != 0 || @posout[pos][:val].positive?
+        (pos += 1; next) if sss[pos] != 0 || @posout[pos][:val].positive?
         x = @posout[pos][:xxx]
 
         # accepting positioned outlet PO, computing AA
@@ -298,6 +297,7 @@ module Rules
         else
           puts ''
         end
+        pos += 1
       end
       false
     end
