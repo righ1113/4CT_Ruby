@@ -233,21 +233,21 @@ module Rules
         # Debug.Assert(ret.retB,
         #   "Incorrect hubcap upper bound");
         puts "#{forcedch} #{allowedch} #{maxch} Reducible. Case done."
-        # return true
+        return true
       end
 
       # 5.
       return true if update_bound_sub5 sss, maxch, pos, depth, deg, axles, forcedch, allowedch
       # 6.
-      # Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
-      Assert.assert_equal (1 == 2), false, 'Unexpected error 101'
+      Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
+      # Assert.assert_equal (1 == 2), false, 'Unexpected error 101'
       false
     end
 
     def update_bound_sub5(sss, maxch, pos, depth, deg, axles, forcedch, allowedch)
       # 5.
       while sss[pos] < 99
-        (pos += 1; next) if sss[pos] != 0 || @posout[pos][:val].positive?
+        (pos += 1; next) if sss[pos] != 0 || @posout[pos][:val].negative?
         x = @posout[pos][:xxx]
 
         # accepting positioned outlet PO, computing AA
@@ -269,8 +269,8 @@ module Rules
         # Check if a previously rejected positioned outlet is forced to apply
         good = 1
         pos.times do |ii|
-          chk = !(Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii], deg).zero?
-          if sss[ii] == -1 && chk
+          is_zero = (Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii], deg).zero?
+          if sss[ii] == -1 && !is_zero
             print "#{depth} Positioned outlet "
             puts "#{@posout[pos][:num]}, #{x} can't be forced, b'z it forces #{@posout[ii][:num]}, #{@posout[ii][:xxx]}"
             good = 0
