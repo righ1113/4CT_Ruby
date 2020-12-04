@@ -269,7 +269,8 @@ module Rules
         # Check if a previously rejected positioned outlet is forced to apply
         good = 1
         pos.times do |ii|
-          is_zero = (Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii], deg).zero?
+          is_zero =
+            (Symmetry.outlet_forced axles2[:low][axles2[:lev]], axles2[:upp][axles2[:lev]], @posout[ii], deg).zero?
           if sss[ii] == -1 && !is_zero
             print "#{depth} Positioned outlet "
             puts "#{@posout[pos][:num]}, #{x} can't be forced, b'z it forces #{@posout[ii][:num]}, #{@posout[ii][:xxx]}"

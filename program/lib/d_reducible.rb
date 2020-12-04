@@ -11,7 +11,7 @@ module Reducible
     include ReadFile
     include GetAdjmat
 
-    attr_accessor :r_axles
+    # attr_accessor :r_axles
 
     def initialize
       # 好配置を読み込む
@@ -30,8 +30,8 @@ module Reducible
     end
 
     def update_reducible(deg, axles)
-      r_axles[:low][0] = axles[:low][axles[:lev]]
-      r_axles[:upp][0] = axles[:upp][axles[:lev]]
+      @r_axles[:low][0] = axles[:low][axles[:lev]]
+      @r_axles[:upp][0] = axles[:upp][axles[:lev]]
 
       puts 'Testing reducibility. Putting input axle on stack.'
 
@@ -47,7 +47,7 @@ module Reducible
           break
         end
 
-        puts 'Axle from stack:'
+        # puts 'Axle from stack:'
         get_adjmat deg, axles, num_axles, @adjmat
         get_edgelist num_axles, deg
         h = 0
@@ -78,14 +78,14 @@ module Reducible
 
         ((redring + 1)..redverts).each do |i|
           v = i # image[i]
-          next if r_axles[:low][num_axles][v] == r_axles[:upp][num_axles][v]
-          puts 'Lowering upper bound of vertex'
-          p 'fuga' # ("{0} to {1} and adding to stack\n", v, aStack.axle.upp[num_axles][v] - 1);
+          next if @r_axles[:low][num_axles][v] == @r_axles[:upp][num_axles][v]
+          # puts 'Lowering upper bound of vertex'
+          # p 'fuga' # ("{0} to {1} and adding to stack\n", v, aStack.axle.upp[num_axles][v] - 1);
 
           # Debug.Assert((num_axles < MAXASTACK),
           #   "More than %d elements in axle stack needed\n");
 
-          r_axles[:upp][num_axles][v] -= 1
+          @r_axles[:upp][num_axles][v] -= 1
           num_axles += 1
         end
       end

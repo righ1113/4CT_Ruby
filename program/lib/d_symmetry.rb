@@ -4,6 +4,11 @@
 module Symmetry
   # Symmetry クラス
   class Symmetry
+    def self.del_sym(nosym, nolines, lev)
+      return nosym if nosym < 1 || nolines[nosym - 1][:nol] - 1 < lev
+      del_sym (nosym - 1), nolines, lev
+    end
+
     def self.outlet_forced(axles_low, axles_upp, pos_i, deg)
       xxi = pos_i[:xxx] - 1
       pos_i[:nol].times do |i|

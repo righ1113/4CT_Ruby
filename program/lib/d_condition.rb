@@ -10,6 +10,9 @@ module Condition
   class Condition
     include Const
 
+    attr_reader   :sym
+    attr_accessor :nosym
+
     def initialize
       # インスタンス変数を作る
       @sym = Array.new(Const::MAXSYM + 1) do
@@ -31,7 +34,7 @@ module Condition
     end
 
     def update_condition1(n_ind, m_ind, axles)
-      p n_ind, m_ind
+      # p n_ind, m_ind
 
       axles[:low][axles[:lev] + 1] = axles[:low][axles[:lev]].deep_dup
       axles[:upp][axles[:lev] + 1] = axles[:upp][axles[:lev]].deep_dup
