@@ -19,6 +19,7 @@ class Discharge
   include Rules
   include Reducible
   include Condition
+  include Symmetry
 
   def self.discharge(degree = 7)
     # @deg
@@ -86,6 +87,7 @@ class Discharge
         @axles[:lev] -= 1
       when 'S'
         puts 'Symmetry.'
+        Symmetry.chk_sy tac[2].to_i, tac[3].to_i, tac[4].to_i, tac[5].to_i, @axles, condition.sym, condition.nosym, @deg
         condition.down_nosym @axles[:lev]
         @axles[:lev] -= 1
       else
