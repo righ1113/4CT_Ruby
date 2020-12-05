@@ -111,8 +111,13 @@ module Rules
       # set data
       index = 0
       rules.each do |line|
-        index += 1 if do_outlet deg, axles,  line['z'][1], line['z'], line['b'], index
-        index += 1 if do_outlet deg, axles, -line['z'][1], line['z'], line['b'], index
+        if line['c'] == 'invert'
+          index += 1 if do_outlet deg, axles,  line['z'][1], line['z'], line['b'], index, V, U
+          index += 1 if do_outlet deg, axles, -line['z'][1], line['z'], line['b'], index, V, U
+        else
+          index += 1 if do_outlet deg, axles,  line['z'][1], line['z'], line['b'], index, U, V
+          index += 1 if do_outlet deg, axles, -line['z'][1], line['z'], line['b'], index, U, V
+        end
       end
       # データを2回重ねる
       index.times do |i|
@@ -126,7 +131,7 @@ module Rules
       end
     end
 
-    def do_outlet(deg, axles, number, zzz, bbb, index)
+    def do_outlet(deg, axles, number, zzz, bbb, index, xxx, yyy)
       get_adjmat deg, axles, axles[:lev], @adjmat
       now_pos = @posout[index]
       now_pos[:nol] = zzz[0] - 1
@@ -149,8 +154,8 @@ module Rules
           next
         end
         if j >= 2	# now computing T->pos[i]
-          u = phi[U[zzz[j]]]
-          v = phi[V[zzz[j]]]
+          u = phi[xxx[zzz[j]]]
+          v = phi[yyy[zzz[j]]]
           now_pos[:pos][i], phi[zzz[j]] = @adjmat[u][v], @adjmat[u][v]
         end
         u = now_pos[:pos][i]
