@@ -19,7 +19,6 @@ class Discharge
   include Rules
   include Reducible
   include Condition
-  include Symmetry
 
   def self.discharge(degree = 7)
     # @deg
@@ -78,16 +77,16 @@ class Discharge
       when 'H'
         puts 'Hubcap.'
         hubcap.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
-        condition.nosym = Symmetry.del_sym condition.nosym, condition.sym, @axles[:lev]
+        condition.down_nosym @axles[:lev]
         @axles[:lev] -= 1
       when 'R'
         puts 'Reducible.'
         reducible.update_reducible @deg, @axles
-        condition.nosym = Symmetry.del_sym condition.nosym, condition.sym, @axles[:lev]
+        condition.down_nosym @axles[:lev]
         @axles[:lev] -= 1
       when 'S'
         puts 'Symmetry.'
-        condition.nosym = Symmetry.del_sym condition.nosym, condition.sym, @axles[:lev]
+        condition.down_nosym @axles[:lev]
         @axles[:lev] -= 1
       else
         Assert.assert_equal (1 == 2), true, "無効な tactic: #{tac}"

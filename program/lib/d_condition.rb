@@ -81,5 +81,16 @@ module Condition
       @mmm[axles[:lev]]     = m_ind
       @mmm[axles[:lev] + 1] = 0
     end
+
+    def down_nosym(lev)
+      @nosym = down_nosym2 @nosym, lev
+    end
+
+    private
+
+    def down_nosym2(nosym, lev)
+      return nosym if nosym < 1 || @sym[nosym - 1][:nol] - 1 < lev
+      down_nosym2 (nosym - 1), lev
+    end
   end
 end
