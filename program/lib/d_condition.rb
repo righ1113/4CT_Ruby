@@ -58,7 +58,7 @@ module Condition
     def update_condition2(n_ind, m_ind, axles, deg, lineno)
       # remember symmetry unless contains a fan vertex
       good = true
-      (axles[:lev]).times { |i| good = false unless @nnn[i].between?(1, 2 * deg) }
+      (axles[:lev] + 1).times { |i| good = false unless @nnn[i].between?(1, 2 * deg) }
       if good # remember symmetry
         Assert.assert_equal (@nosym < Const::MAXSYM), true, 'Too many symmetries'
         @sym[@nosym][:num] = lineno
