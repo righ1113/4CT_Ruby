@@ -64,14 +64,14 @@ module Condition
         @sym[@nosym][:num] = lineno
         @sym[@nosym][:val] = 1
         @sym[@nosym][:nol] = axles[:lev] + 1
-        (axles[:lev]).times do |i|
+        (axles[:lev] + 1).times do |i|
           @sym[@nosym][:pos][i] = @nnn[i]
           if @mmm[i].positive?
             @sym[@nosym][:low][i] = @mmm[i]
             @sym[@nosym][:upp][i] = Const::INFTY
           else
             @sym[@nosym][:low][i] = 5
-            @sym[@nosym][:upp][i] = @mmm[i]
+            @sym[@nosym][:upp][i] = -@mmm[i]
           end
         end
       end

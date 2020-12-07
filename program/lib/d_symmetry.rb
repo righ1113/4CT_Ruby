@@ -59,7 +59,7 @@ module Symmetry
         Assert.assert_equal is_one, true, 'Invalid symmetry'
       else
         is_one = (refl_forced axles[:low][axles[:lev]], axles[:upp][axles[:lev]], sym[i], deg) == 1
-        # Assert.assert_equal is_one, true, 'Invalid reflected symmetry'
+        Assert.assert_equal is_one, true, 'Invalid reflected symmetry'
       end
       puts '  checkSymmetry OK.'
     end
