@@ -2,6 +2,7 @@
 *.rbc
 /.config
 /.vscode
+/program/app/.vscode
 /coverage/
 /InstalledFiles
 /pkg/
