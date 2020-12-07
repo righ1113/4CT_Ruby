@@ -160,7 +160,7 @@ module Rules
         end
         u = now_pos[:pos][i]
         # update adjmat
-        do_fan deg, u, axles[:low][axles[:lev]][i], @adjmat if u <= deg && now_pos[:low][i] == now_pos[:upp][i]
+        do_fan deg, u, now_pos[:low][i], @adjmat if u <= deg && now_pos[:low][i] == now_pos[:upp][i]
         i += 1
       end
       # Condition (T4) is checked in CheckIso
