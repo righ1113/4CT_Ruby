@@ -2,6 +2,8 @@
 
 require '../lib/c_const'
 require '../lib/c_read_file'
+require 'active_support'
+require 'active_support/core_ext'
 
 # Reducible モジュール
 module Reducible
@@ -30,22 +32,15 @@ module Reducible
     end
 
     def update_reducible(deg, axles)
-      @r_axles[:low][0] = axles[:low][axles[:lev]]
-      @r_axles[:upp][0] = axles[:upp][axles[:lev]]
+      @r_axles[:low][0] = axles[:low][axles[:lev]].deep_dup
+      @r_axles[:upp][0] = axles[:upp][axles[:lev]].deep_dup
 
       puts 'Testing reducibility. Putting input axle on stack.'
 
       noconf    = 633 # 好配置の個数
       num_axles = 1
-      num_break = 0
-      while num_axles.positive? && num_axles < Const::MAXASTACK
+      while num_axles.positive?
         num_axles -= 1
-        num_break += 1
-
-        if num_break >= 4096
-          puts '<<<caution!>>> break 4096 loop!'
-          break
-        end
 
         # puts 'Axle from stack:'
         get_adjmat deg, axles, num_axles, @adjmat
@@ -64,12 +59,13 @@ module Reducible
         # the above are no vertices and ring-size of free completion of K
         # could not use conf[h][0][0], because conf may be NULL
 
+        # omitted
         # p ("Conf({0},{1},{2}): ", h / 70 + 1, (h % 70) / 7 + 1, h % 7 + 1)
-        (1..redverts).each do |j|
-          # if image[j] != -1
-          #   p 'hoge' # (" {0}({1})", rP2.image.ver[j], j);
-          # end
-        end
+        # (1..redverts).each do |j|
+        #   if image[j] != -1
+        #     p 'hoge' # (" {0}({1})", rP2.image.ver[j], j);
+        #   end
+        # end
 
         # omitted
         # if (conf != NULL)
@@ -82,10 +78,16 @@ module Reducible
           # puts 'Lowering upper bound of vertex'
           # p 'fuga' # ("{0} to {1} and adding to stack\n", v, aStack.axle.upp[num_axles][v] - 1);
 
-          # Debug.Assert((num_axles < MAXASTACK),
-          #   "More than %d elements in axle stack needed\n");
+          Assert.assert_equal (num_axles < Const::MAXASTACK), true, 'More than %d elements in axle stack needed'
 
+          # コピー
+          unless num_axles.zero?
+            @r_axles[:low][num_axles] = @r_axles[:low][num_axles - 1].deep_dup
+            @r_axles[:upp][num_axles] = @r_axles[:upp][num_axles - 1].deep_dup
+          end
+          # デクリメント
           @r_axles[:upp][num_axles][v] -= 1
+          # インクリメント
           num_axles += 1
         end
       end
