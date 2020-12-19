@@ -18,6 +18,7 @@ module Reducible
     def initialize
       # 好配置を読み込む
       @g_confs = GoodConfs.new
+      # p @g_confs.data[10]['a']
 
       # インスタンス変数を作る
       @r_axles = {
@@ -45,19 +46,19 @@ module Reducible
         # puts 'Axle from stack:'
         get_adjmat deg, axles, num_axles, @adjmat
         get_edgelist num_axles, deg
-        h = 0
-        # for (h = 0; h < noconf; ++h)
-        #   if SubConf(aStack.adjmat, aStack.axle.upp[num_axles], rP2.redquestions[h], edgelist, image, used)
-        #     break
+        h =
+          noconf.times do |hh|
+            break hh if sub_conf
+          end
         if h == noconf
           puts 'Not reducible'
           return false
         end
         # Semi-reducibility test found h-th configuration, say K, appearing
-        redverts = 5 # rP2.redquestions[h].qa[1];
-        redring  = 1 # rP2.redquestions[h].qb[1];
         # the above are no vertices and ring-size of free completion of K
         # could not use conf[h][0][0], because conf may be NULL
+        redverts = @g_confs.data[h]['a'][1]
+        redring  = @g_confs.data[h]['b'][1]
 
         # omitted
         # p ("Conf({0},{1},{2}): ", h / 70 + 1, (h % 70) / 7 + 1, h % 7 + 1)
@@ -73,7 +74,7 @@ module Reducible
         # Double-check isomorphism
 
         ((redring + 1)..redverts).each do |i|
-          v = i # image[i]
+          v = @image[i]
           next if @r_axles[:low][num_axles][v] == @r_axles[:upp][num_axles][v]
           # puts 'Lowering upper bound of vertex'
           # p 'fuga' # ("{0} to {1} and adding to stack\n", v, aStack.axle.upp[num_axles][v] - 1);
@@ -96,6 +97,12 @@ module Reducible
       true
     end
 
+    private
+
     def get_edgelist(num_axles, deg); end
+
+    def sub_conf
+      true # false
+    end
   end
 end

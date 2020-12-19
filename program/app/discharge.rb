@@ -82,7 +82,7 @@ class Discharge
         @axles[:lev] -= 1
       when 'R'
         puts 'Reducible.'
-        reducible.update_reducible @deg, @axles
+        Assert.assert_equal (reducible.update_reducible @deg, @axles), true, 'Reducibility failed'
         condition.down_nosym @axles[:lev]
         @axles[:lev] -= 1
       when 'S'
@@ -93,7 +93,7 @@ class Discharge
       else
         Assert.assert_equal (1 == 2), true, "無効な tactic: #{tac}"
       end
-      break 'ahaha' if tac[1] == 'S' # 暫定脱出
+      break 'ahaha' if tac[1] == 'R' # 暫定脱出
     end
   end
 end

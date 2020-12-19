@@ -15,6 +15,8 @@ module ReadFile
 
   # sub class 1
   class GoodConfs < ReadFile
+    attr_reader :data
+
     def initialize
       super
       read_file
@@ -24,10 +26,10 @@ module ReadFile
 
     def read_file
       File.open('../4ct_data/d_good_confs.json') do |file|
-        @g_confs = JSON.load file # Hashに変換
+        @data = JSON.load file # Hashに変換
       end
-      # p @g_confs[10]
-      # p @g_confs[10]['a']
+      # p @data[10]
+      # p @data[10]['a']
     end
   end
 
