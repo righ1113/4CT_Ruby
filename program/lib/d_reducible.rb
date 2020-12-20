@@ -45,7 +45,7 @@ module Reducible
 
         # puts 'Axle from stack:'
         get_adjmat deg, axles, num_axles, @adjmat
-        get_edgelist num_axles, deg
+        init_edgelist num_axles, deg
         h =
           noconf.times do |hh|
             break hh if sub_conf
@@ -54,6 +54,7 @@ module Reducible
           puts 'Not reducible'
           return false
         end
+
         # Semi-reducibility test found h-th configuration, say K, appearing
         # the above are no vertices and ring-size of free completion of K
         # could not use conf[h][0][0], because conf may be NULL
@@ -99,7 +100,59 @@ module Reducible
 
     private
 
-    def get_edgelist(num_axles, deg); end
+    def init_edgelist(num_axles, deg)
+      (5..11).each do |a|
+        (5..8).each do |b|
+          break if b > a
+          @edgelist[a][b][0] = 0
+        end
+      end
+      upp = @r_axles[:upp][num_axles]
+      deg.times do |ii|
+        i = ii + 1
+        add_to_list 0, i, upp
+        h = i == 1 ? deg : i - 1
+        add_to_list i, h, upp
+        a, b = deg + h, deg + i
+        add_to_list i, a, upp
+        add_to_list i, b, upp
+        (@r_axles[:low][num_axles][i] != upp[i]) && next
+        # in this case we are not interested in the fan edges
+        (upp[i] == 5) && (add_to_list a, b, upp; next)
+        c = 2 * deg + i
+        add_to_list a, c, upp
+        add_to_list i, c, upp
+        (upp[i] == 6) && (add_to_list b, c, upp; next)
+        d = 3 * deg + i
+        add_to_list c, d, upp
+        add_to_list i, d, upp
+        (upp[i] == 7) && (add_to_list b, d, upp; next)
+        Assert.assert_equal (upp[i] == 8), true, 'Unexpected error in `GetEdgeList'
+        e = 4 * deg + i
+        add_to_list d, e, upp
+        add_to_list i, e, upp
+        add_to_list b, e, upp
+      end
+    end
+
+    def add_to_list(uuu, vvv, degree)
+      # adds the pair u,v to edgelist
+      u, v = uuu, vvv
+      a, b = degree[u], degree[v]
+      if (a >= b) && (b <= 8) && (a <= 11) && ((a <= 8) || u.zero?)
+        Assert.assert_equal (@edgelist[a][b][0] + 2 < Const::MAXELIST), true, 'More than %d entries in edgelist needed'
+        @edgelist[a][b][0] += 1
+        @edgelist[a][b][@edgelist[a][b][0]] = u
+        @edgelist[a][b][0] += 1
+        @edgelist[a][b][@edgelist[a][b][0]] = v
+      end
+      return unless (b >= a) && (a <= 8) && (b <= 11) && ((b <= 8) || v.zero?)
+      Assert.assert_equal (@edgelist[b][a][0] + 2 < Const::MAXELIST), true, 'More than %d entries in edgelist needed'
+      @edgelist[b][a][0] += 1
+      @edgelist[b][a][@edgelist[b][a][0]] = v
+      @edgelist[b][a][0] += 1
+      @edgelist[b][a][@edgelist[b][a][0]] = u
+    end
 
     def sub_conf
       true # false
