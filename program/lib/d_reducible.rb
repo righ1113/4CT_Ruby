@@ -7,8 +7,8 @@ require 'active_support/core_ext'
 
 # Reducible モジュール
 module Reducible
-  # Reducible クラス
-  class Reducible
+  # ReducibleBase クラス
+  class ReducibleBase
     include Const
     include ReadFile
     include GetAdjmat
@@ -100,6 +100,19 @@ module Reducible
 
     private
 
+    def init_edgelist(num_axles, deg); end
+
+    def add_to_list(uuu, vvv, degree); end
+
+    def sub_conf
+      true
+    end
+  end
+
+  # ReducibleBase を継承する
+  class Reducible < ReducibleBase
+    private
+
     def init_edgelist(num_axles, deg)
       (5..11).each do |a|
         (5..8).each do |b|
@@ -155,7 +168,7 @@ module Reducible
     end
 
     def sub_conf
-      true # false
+      true
     end
   end
 end
