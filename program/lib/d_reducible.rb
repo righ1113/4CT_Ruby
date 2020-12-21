@@ -44,11 +44,11 @@ module Reducible
         num_axles -= 1
 
         # puts 'Axle from stack:'
-        get_adjmat deg, axles, num_axles, @adjmat
+        get_adjmat deg, @r_axles, num_axles, @adjmat
         init_edgelist num_axles, deg
         h =
           noconf.times do |hh|
-            break hh if sub_conf
+            break hh if sub_conf hh, @r_axles[:upp][num_axles]
           end
         if h == noconf
           puts 'Not reducible'
@@ -102,9 +102,7 @@ module Reducible
 
     def init_edgelist(num_axles, deg); end
 
-    def add_to_list(uuu, vvv, degree); end
-
-    def sub_conf
+    def sub_conf(_hhh, _degree)
       true
     end
   end
@@ -167,7 +165,20 @@ module Reducible
       @edgelist[b][a][@edgelist[b][a][0]] = u
     end
 
-    def sub_conf
+    def sub_conf(hhh, degree)
+      edg = @edgelist[@g_confs.data[hhh]['d'][0]][@g_confs.data[hhh]['d'][1]]
+      i = 1
+      while i <= edg[0]
+        x = edg[i]
+        i += 1
+        y = edg[i]
+        return true if rooted_sub_conf(degree, x, y, 1) || rooted_sub_conf(degree, x, y, 0)
+        i += 1
+      end
+      false
+    end
+
+    def rooted_sub_conf(_degree, _xxx, _yyy, _clock_wise)
       true
     end
   end
