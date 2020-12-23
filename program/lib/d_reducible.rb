@@ -48,7 +48,7 @@ module Reducible
         init_edgelist num_axles, deg
         h =
           noconf.times do |hh|
-            break hh if sub_conf hh, @r_axles[:upp][num_axles]
+            break hh if sub_conf hh, deg, @r_axles[:upp][num_axles]
           end
         if h == noconf
           puts 'Not reducible'
@@ -102,7 +102,7 @@ module Reducible
 
     def init_edgelist(num_axles, deg); end
 
-    def sub_conf(_hhh, _degree)
+    def sub_conf(_hhh, _deg, _degree)
       true
     end
   end
@@ -165,20 +165,53 @@ module Reducible
       @edgelist[b][a][@edgelist[b][a][0]] = u
     end
 
-    def sub_conf(hhh, degree)
+    def sub_conf(hhh, deg, degree)
       edg = @edgelist[@g_confs.data[hhh]['d'][0]][@g_confs.data[hhh]['d'][1]]
       i = 1
       while i <= edg[0]
         x = edg[i]
         i += 1
         y = edg[i]
-        return true if rooted_sub_conf(degree, x, y, 1) || rooted_sub_conf(degree, x, y, 0)
+        return true if
+          rooted_sub_conf(deg, degree, @g_confs.data[hhh], x, y, 1) ||
+          rooted_sub_conf(deg, degree, @g_confs.data[hhh], x, y, 0)
         i += 1
       end
       false
     end
 
-    def rooted_sub_conf(_degree, _xxx, _yyy, _clock_wise)
+    def rooted_sub_conf(deg, degree, g_conf, xxx, yyy, clock_wise)
+      Const::CARTVERT.times do |j|
+        @used[j]  = false
+        @image[j] = -1
+      end
+      @image[0] = clock_wise
+      @image[g_conf['c'][0]] = xxx
+      @image[g_conf['c'][1]] = yyy
+      @used[xxx] = true
+      @used[yyy] = true
+      j = 2
+      while g_conf['a'][j] >= 0
+        w =
+          if clock_wise != 0
+            @adjmat[@image[g_conf['a'][j]]][@image[g_conf['b'][j]]]
+          else
+            @adjmat[@image[g_conf['b'][j]]][@image[g_conf['a'][j]]]
+          end
+        return false if w == -1
+        return false if (g_conf['d'][j] != 0) && g_conf['d'][j] != degree[w]
+        return false if @used[w]
+        @image[g_conf['c'][j]] = w
+        @used[w] = true
+        j += 1
+      end
+
+      # test if image is well-positioned
+      deg.times do |jj|
+        j = jj + 1
+        return false if !@used[j] && @used[deg + j] && @used[j == 1 ? 2 * deg : deg + j - 1]
+      end
+
       true
     end
   end
