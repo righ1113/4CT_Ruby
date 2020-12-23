@@ -174,7 +174,7 @@ module Rules
     # def initialize(deg, axles) もいらない
     include Symmetry
 
-    def update_hubcap(deg, axles, tac_v)
+    def update_hubcap(deg, axles, tac_v, reducible)
       # 1. omitted
       # 2. omitted
       # 3. omitted
@@ -191,13 +191,13 @@ module Rules
         else
           s[nouts] = 99 # to indicate end of list
         end
-        update_bound s, xs[2], 0, 0, deg, axles
+        update_bound s, xs[2], 0, 0, deg, axles, reducible
       end
     end
 
     private
 
-    def update_bound(sss, maxch, pos, depth, deg, axles)
+    def update_bound(sss, maxch, pos, depth, deg, axles, reducible)
       # 1. compute forced and permitted rules, allowedch, forcedch, update s
       forcedch = 0; allowedch = 0; i = 0
       while sss[i] < 99
@@ -234,22 +234,20 @@ module Rules
 
       # 4. check reducibility
       if forcedch > maxch
-        # ret = LibDischargeReduce.Reduce(ref rP1, ref rP2, axles);
-        # Debug.Assert(ret.retB,
-        #   "Incorrect hubcap upper bound");
+        Assert.assert_equal (reducible.update_reducible deg, axles), true, 'Incorrect hubcap upper bound'
         puts "#{forcedch} #{allowedch} #{maxch} Reducible. Case done."
         return true
       end
 
       # 5.
-      return true if update_bound_sub5 sss, maxch, pos, depth, deg, axles, forcedch, allowedch
+      return true if update_bound_sub5 sss, maxch, pos, depth, deg, axles, forcedch, allowedch, reducible
       # 6.
       Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
       # Assert.assert_equal (1 == 2), false, 'Unexpected error 101'
       false
     end
 
-    def update_bound_sub5(sss, maxch, pos, depth, deg, axles, forcedch, allowedch)
+    def update_bound_sub5(sss, maxch, pos, depth, deg, axles, forcedch, allowedch, reducible)
       # 5.
       while sss[pos] < 99
         (pos += 1; next) if sss[pos] != 0 || @posout[pos][:val].negative?
@@ -290,7 +288,7 @@ module Rules
           s_prime[pos] = 1
           print "#{depth} Starting recursion with "
           puts "#{@posout[pos][:num]}, #{x} forced"
-          update_bound s_prime, maxch, (pos + 1), (depth + 1), deg, axles2
+          update_bound s_prime, maxch, (pos + 1), (depth + 1), deg, axles2, reducible
         end
         # rejecting positioned outlet PO
         puts "#{depth} Rejecting positioned outlet "

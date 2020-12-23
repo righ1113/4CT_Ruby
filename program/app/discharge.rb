@@ -77,7 +77,12 @@ class Discharge
         @axles[:lev] += 1
       when 'H'
         puts 'Hubcap.'
-        hubcap.update_hubcap @deg, @axles, (tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) })
+        hubcap.update_hubcap(
+          @deg,
+          @axles,
+          tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) },
+          reducible
+        )
         condition.down_nosym @axles[:lev]
         @axles[:lev] -= 1
       when 'R'
@@ -93,7 +98,7 @@ class Discharge
       else
         Assert.assert_equal (1 == 2), true, "無効な tactic: #{tac}"
       end
-      break 'ahaha' if tac[1] == 'R' # 暫定脱出
+      break 'ahaha' if tac[1] == 'S' # 暫定脱出
     end
   end
 end

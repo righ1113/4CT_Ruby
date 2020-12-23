@@ -31,7 +31,7 @@ Style/ParallelAssignment:
   Enabled: false
 
 Metrics/BlockLength:
-  Max: 30
+  Max: 34
 
 Style/Semicolon:
   Enabled: false
