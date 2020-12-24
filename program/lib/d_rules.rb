@@ -243,7 +243,6 @@ module Rules
       return true if update_bound_sub5 sss, maxch, pos, depth, deg, axles, forcedch, allowedch, reducible
       # 6.
       Assert.assert_equal (1 == 2), true, 'Unexpected error 101'
-      # Assert.assert_equal (1 == 2), false, 'Unexpected error 101'
       false
     end
 

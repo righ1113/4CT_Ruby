@@ -37,17 +37,17 @@ module ReadFile
   class Tactics < ReadFile
     attr_reader :tacs
 
-    def initialize
+    def initialize(deg)
       super
-      read_file
+      read_file deg
     end
 
     private
 
-    def read_file
+    def read_file(deg)
       p 'Tactics read_file() start'
       @tacs = []
-      File.foreach('../4ct_data/d_tactics07.txt') do |line|
+      File.foreach(format('../4ct_data/d_tactics%02<num>d.txt', num: deg)) do |line|
         tacs << line.chomp.split # chomp: 改行文字を削除
       end
     end

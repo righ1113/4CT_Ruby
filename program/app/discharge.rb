@@ -47,7 +47,7 @@ class Discharge
     reducible = Reducible.new
 
     # Tactics クラスのインスタンスを作る
-    tactics = Tactics.new
+    tactics = Tactics.new @deg
 
     Assert.assertions = 0
     Assert.assert_equal (2 + 1), 3, 'fail1'
@@ -99,6 +99,7 @@ class Discharge
         Assert.assert_equal (1 == 2), true, "無効な tactic: #{tac}"
       end
       break 'ahaha' if tac[1] == 'S' # 暫定脱出
+      # break 'ihihi' if i == 3000 # 暫定脱出
     end
   end
 end
