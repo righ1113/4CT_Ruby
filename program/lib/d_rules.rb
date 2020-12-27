@@ -75,7 +75,7 @@ module Rules
 
     U        = [0, 0, 0, 1, 0, 3, 2, 1, 4, 3, 8, 3, 0, 0, 5, 6, 15].freeze
     V        = [0, 0, 1, 0, 2, 0, 1, 3, 2, 5, 2, 9, 4, 12, 0, 1, 1].freeze
-    DIFNOUTS = [0, 0, 0, 0, 0, 0, 0, 103, 103, 103, 103, 103].freeze
+    DIFNOUTS = [0, 0, 0, 0, 0, 0, 0, 103, 64, 103, 103, 103].freeze
 
     def initialize(deg, axles)
       super
