@@ -184,9 +184,9 @@ module Rules
       s = Array.new(2 * Const::MAXOUTLETS + 1, 0)
       tac_v.each do |xs|
         puts "--> Checking hubcap member (#{xs[0]}, #{xs[1]}, #{xs[2]})"
-        (nouts - 1).times { |j| @posout[j][:xxx] = xs[0]; s[j] = 0 }
+        nouts.times { |j| @posout[j][:xxx] = xs[0]; s[j] = 0 }
         if xs[0] != xs[1]
-          (nouts - 1).times { |j| @posout[nouts + j][:xxx] = xs[1]; s[nouts + j] = 0 }
+          nouts.times { |j| @posout[nouts + j][:xxx] = xs[1]; s[nouts + j] = 0 }
           s[2 * nouts] = 99 # to indicate end of list
         else
           s[nouts] = 99 # to indicate end of list

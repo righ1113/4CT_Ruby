@@ -98,7 +98,7 @@ class Discharge
       else
         Assert.assert_equal (1 == 2), true, "無効な tactic: #{tac}"
       end
-      break 'ahaha' if tac[1] == 'S' # 暫定脱出
+      # break 'ahaha' if tac[1] == 'S' # 暫定脱出
       # break 'ihihi' if i == 3000 # 暫定脱出
     end
   end
