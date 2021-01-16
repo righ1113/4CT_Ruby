@@ -52,4 +52,23 @@ module ReadFile
       end
     end
   end
+
+  # reduce で使用
+  class GoodConfsR < ReadFile
+    attr_reader :data
+
+    def initialize
+      super
+      read_file
+    end
+
+    private
+
+    def read_file
+      File.open('../4ct_data/r_good_confs.json') do |file|
+        @data = JSON.load file # 3D配列 に変換
+        # p @data[0][0][1] # => 7322
+      end
+    end
+  end
 end
