@@ -80,7 +80,7 @@ class Discharge
         hubcap.update_hubcap(
           @deg,
           @axles,
-          tac[2..-1].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) },
+          tac[2..].map { |e1| e1.delete('(').delete(')').split(',').map(&:to_i) },
           reducible
         )
         condition.down_nosym @axles[:lev]
