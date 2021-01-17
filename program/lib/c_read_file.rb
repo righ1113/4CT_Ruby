@@ -50,6 +50,7 @@ module ReadFile
       File.foreach(format('../4ct_data/d_tactics%02<num>d.txt', num: deg)) do |line|
         tacs << line.chomp.split # chomp: 改行文字を削除
       end
+      true
     end
   end
 
@@ -69,6 +70,7 @@ module ReadFile
         @data = JSON.load file # 3D配列 に変換
         # p @data[0][0][1] # => 7322
       end
+      true
     end
   end
 end

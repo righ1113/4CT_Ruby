@@ -1,0 +1,66 @@
+
+# Classes
+module Const
+  class Const
+    MAXVAL: Integer
+    CARTVERT: Integer
+    INFTY: Integer
+    MAXOUTLETS: Integer
+    MAXSYM: Integer
+    MAXELIST: Integer
+    MAXASTACK: Integer
+    MAXLEV: Integer
+  end
+
+  # class Assert < Minitest::Test
+  # end
+end
+
+module ReadFile
+  class ReadFile
+    def initialize: (?nil _deg, ?nil _axles) -> nil
+
+    private
+    def read_file: -> nil
+  end
+
+  class GoodConfs < ReadFile
+    attr_reader data: untyped
+    def initialize: -> untyped
+
+    private
+    def read_file: -> untyped
+  end
+
+  class Tactics < ReadFile
+    attr_reader tacs: Array[bot]
+    def initialize: (Integer deg) -> bool
+
+    private
+    def read_file: (Integer deg) -> bool
+  end
+
+  class GoodConfsR < ReadFile
+    attr_reader data: Array[Array[Array[Integer]]]
+    def initialize: -> bool
+
+    private
+    def read_file: -> bool
+  end
+end
+
+module Strip
+  class Strip
+    attr_reader data: Integer
+    def initialize: (Array[Array[Integer]] _g_conf) -> Integer
+  end
+end
+
+class Reduce
+  include Strip
+  include ReadFile
+  include Const
+
+  def self.reduce: -> nil
+  def self.c_d_reducible?: (Array[Array[Integer]] g_conf, Integer iii) -> bool
+end
