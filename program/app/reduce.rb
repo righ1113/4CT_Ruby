@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
-# $ activesupport の gem をインストールする
+# ・以下は1回だけおこなう
+# $ gem install bundler
+# $ cd program
+# $ bundle install --path=vendor/bundle
+
+# ・実行方法
 # $ cd program/app
-# $ ruby reduce.rb
+# $ bundle exec ruby reduce.rb
 
 require '../lib/c_const'
 require '../lib/c_read_file'

@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
+# ・以下は1回だけおこなう
+# $ gem install bundler
+# $ cd program
+# $ bundle install --path=vendor/bundle
+
+# ・実行方法
 # $ cd program/app
-# $ ruby discharge.rb 7
-# irb なら
-# $ irb
-# > load 'discharge.rb'
-# > Discharge.discharge 7
+# $ bundle exec ruby discharge.rb 7
 
 require '../lib/c_const'
 require '../lib/c_read_file'
