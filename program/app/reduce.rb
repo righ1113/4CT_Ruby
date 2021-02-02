@@ -45,7 +45,7 @@ class Reduce
     # 1. strip()
     # Strip クラスのインスタンスを作る
     strip = Strip.new g_conf
-    p strip.data
+    p strip.edgeno[1]
 
     # 2. findangles()
     # "findangles" fills in the arrays "angle","diffangle","sameangle" and

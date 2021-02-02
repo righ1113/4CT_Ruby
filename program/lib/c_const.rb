@@ -14,6 +14,9 @@ module Const
     MAXELIST   = 134            # length of edgelist[a][b]
     MAXASTACK  = 5              # max height of Astack (see "Reduce")
     MAXLEV     = 12             # max level of an input line + 1
+
+    MVERTS     = 27             # max number of vertices in a free completion + 1
+    EDGES      = 62             # max number of edges in a free completion + 1
   end
 
   # Assert クラス
