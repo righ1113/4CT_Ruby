@@ -25,9 +25,9 @@ module ReadFile
     private
 
     def read_file
-      File.open('../4ct_data/d_good_confs.json') do |file|
-        @data = JSON.load file # Hashに変換
-      end
+      file = File.new('../4ct_data/d_good_confs.json')
+      @data = JSON.load file # Hashに変換
+      file.close
       # p @data[10]
       # p @data[10]['a']
     end
@@ -66,10 +66,10 @@ module ReadFile
     private
 
     def read_file
-      File.open('../4ct_data/r_good_confs.json') do |file|
-        @data = JSON.load file # 3D配列 に変換
-        # p @data[0][0][1] # => 7322
-      end
+      # rbs に File.open()が定義されていない
+      file = File.new('../4ct_data/r_good_confs.json')
+      @data = JSON.load file # 3D配列 に変換
+      file.close
       true
     end
   end

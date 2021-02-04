@@ -10,6 +10,8 @@ module Const
     MAXELIST: Integer
     MAXASTACK: Integer
     MAXLEV: Integer
+    MVERTS: Integer
+    EDGES: Integer
   end
 
   # class Assert < Minitest::Test
@@ -18,7 +20,7 @@ end
 
 module ReadFile
   class ReadFile
-    def initialize: (?nil _deg, ?nil _axles) -> nil
+    def initialize: (?nil _deg, ?nil _axles) -> void
 
     private
     def read_file: -> nil
@@ -26,7 +28,7 @@ module ReadFile
 
   class GoodConfs < ReadFile
     attr_reader data: untyped
-    def initialize: -> untyped
+    def initialize: -> void
 
     private
     def read_file: -> untyped
@@ -34,7 +36,7 @@ module ReadFile
 
   class Tactics < ReadFile
     attr_reader tacs: Array[bot]
-    def initialize: (Integer deg) -> bool
+    def initialize: (Integer deg) -> void
 
     private
     def read_file: (Integer deg) -> bool
@@ -42,7 +44,7 @@ module ReadFile
 
   class GoodConfsR < ReadFile
     attr_reader data: Array[Array[Array[Integer]]]
-    def initialize: -> bool
+    def initialize: -> void
 
     private
     def read_file: -> bool
@@ -51,8 +53,17 @@ end
 
 module Strip
   class Strip
-    attr_reader data: Integer
-    def initialize: (Array[Array[Integer]] _g_conf) -> Integer
+    attr_reader edgeno: Array[Array[Integer]]
+    def initialize: (Array[Array[Integer]] g_conf) -> void
+
+    private
+    def strip_sub2: (
+      Array[Array[Integer]] g_conf,
+      Integer verts,
+      Integer ring,
+      Array[bool] done,
+      Integer term) -> Integer
+    def in_interval: (Array[Integer], Array[bool] done) -> Integer
   end
 end
 

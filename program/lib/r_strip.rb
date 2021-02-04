@@ -27,7 +27,7 @@ module Strip
 
       # 2. stripSub2
       # This eventually lists all the internal edges of the configuration
-      term = strip_sub2 g_conf, verts, ring, done0, term
+      _term = strip_sub2 g_conf, verts, ring, done0, term
 
       # 3. stripSub3
       # Now we must list the edges between the interior and the ring
@@ -97,6 +97,8 @@ module Strip
       term
     end
 
-    def in_interval(_grav, _done) = 0
+    def in_interval(_grav, _done)
+      0
+    end
   end
 end
