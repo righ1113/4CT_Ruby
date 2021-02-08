@@ -97,8 +97,33 @@ module Strip
       term
     end
 
-    def in_interval(_grav, _done)
-      0
+    def in_interval(grav, done)
+      d = grav[0 + 1]
+      first = 1
+      while first < d && !done[grav[first + 1]] do first += 1 end
+      return (done[grav[d + 1]] ? 1 : 0) if first == d
+      last = first
+
+      while last < d && done[grav[1 + last + 1]] do last += 1 end
+      length = last - first + 1
+      return length if last == d
+
+      if first > 1
+        ((last + 2)..d).each do |j|
+          return 0 if done[grav[j + 1]]
+        end
+        return length
+      end
+      worried = false
+      ((last + 2)..d).each do |j|
+        if done[grav[j + 1]]
+          length += 1
+          worried = true
+        elsif worried
+          return 0
+        end
+      end
+      length
     end
   end
 end
