@@ -22,15 +22,16 @@ module Strip
         @edgeno[u][v] = v
         @edgeno[v][u] = v
       end
-      done0 = Array.new(Const::MVERTS, false)
-      term  = 3 * (verts - 1) - ring
+      done = Array.new(Const::MVERTS, false)
+      term = 3 * (verts - 1) - ring
 
       # 2. stripSub2
       # This eventually lists all the internal edges of the configuration
-      _term = strip_sub2 g_conf, verts, ring, done0, term
+      term = strip_sub2 g_conf, verts, ring, done, term
 
       # 3. stripSub3
       # Now we must list the edges between the interior and the ring
+      strip_sub3 g_conf, ring, done, term
     end
 
     private
@@ -99,11 +100,12 @@ module Strip
 
     def in_interval(grav, done)
       d = grav[0 + 1]
+
       first = 1
       while first < d && !done[grav[first + 1]] do first += 1 end
       return (done[grav[d + 1]] ? 1 : 0) if first == d
-      last = first
 
+      last = first
       while last < d && done[grav[1 + last + 1]] do last += 1 end
       length = last - first + 1
       return length if last == d
@@ -124,6 +126,45 @@ module Strip
         end
       end
       length
+    end
+
+    def strip_sub3(g_conf, ring, done, term)
+      ring.times do
+        maxint = 0
+        best   = 0
+        v      = 1
+        while v <= ring
+          unless done[v]
+            u          = v > 1 ? v - 1 : ring
+            w          = v < ring ? v + 1 : 1
+            done_int_u = done[u] ? 1 : 0
+            done_int_w = done[w] ? 1 : 0
+            inter      = 3 * g_conf[v + 2][0 + 1] + 4 * (done_int_u + done_int_w)
+            if inter > maxint
+              maxint = inter
+              best = v
+            end
+          end
+          v += 1
+        end
+
+        grav = g_conf[best + 2]
+        u = best > 1 ? best - 1 : ring
+        if done[u]
+          (2..(grav[0 + 1] - 1)).reverse_each do |h|
+            @edgeno[best][grav[h + 1]] = term
+            @edgeno[grav[h + 1]][best] = term
+            term -= 1
+          end
+        else
+          (2..(grav[0 + 1] - 1)).each do |h|
+            @edgeno[best][grav[h + 1]] = term
+            @edgeno[grav[h + 1]][best] = term
+            term -= 1
+          end
+        end
+        done[best] = true
+      end
     end
   end
 end
