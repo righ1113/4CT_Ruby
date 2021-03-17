@@ -12,12 +12,14 @@
 require '../lib/c_const'
 require '../lib/c_read_file'
 require '../lib/r_strip'
+require '../lib/r_angles'
 
 # Reduce クラス
 class Reduce
   include Const
   include ReadFile
   include Strip
+  include Angles
 
   def self.reduce
     # GoodConfsR クラスのインスタンスを作る
@@ -54,6 +56,8 @@ class Reduce
     # others will not be used unless a contract is specified, and if so
     # they will be used in "checkcontract" below to verify that the
     # contract is correct. *)
+    angles = Angles.new g_conf, strip.edgeno
+    p angles.angle[1]
 
     # 3. findlive()
 
