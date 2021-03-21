@@ -50,47 +50,47 @@ module Angles
     private
 
     def angles_sub2(g_conf, edgeno)
-      # for (v = 1; v <= graph[0+1][0]; v++) {
-      #   for (h = 1; h <= graph[v+2][0+1]; h++) {
-      #     if ((v <= graph[0+1][1]) && (h == graph[v+2][0+1]))
-      #       continue;
-      #     if (h >= graph[v+2].Length)
-      #       break;
-      #     i = (h < graph[v+2][1]) ? h + 1 : 1;
-      #     u = graph[v+2][h+1];
-      #     w = graph[v+2][i+1];
-      #     a = edgeno[v][w];
-      #     b = edgeno[u][w];
-      #     c = edgeno[u][v];
-      #     // どっちかが0なら通過
-      #     Debug.Assert((contract[a]==0 || contract[b]==0),
-      #       "         ***  ERROR: CONTRACT IS NOT SPARSE  ***\n\n");
-      #     if (a > c) {
-      #       d = (angle[c][0] >= 4) ? 4 : ++angle[c][0];
-      #       angle[c][d] = a;
-      #       if ((contract[a] == 0) && (contract[b] == 0) && (contract[c] == 0)) {
-      #         e = (diffangle[c][0] >= 4) ? 4 : ++diffangle[c][0];
-      #         diffangle[c][e] = a;
-      #       }
-      #       if (contract[b] != 0) {
-      #         e = (sameangle[c][0] >= 4) ? 4 : ++sameangle[c][0];
-      #         sameangle[c][e] = a;
-      #       }
-      #     }
-      #     if (b > c) {
-      #       d = (angle[c][0] >= 4) ? 4 : ++angle[c][0];
-      #       angle[c][d] = b;
-      #       if ((contract[a] == 0) && (contract[b] == 0) && (contract[c] == 0)) {
-      #         e = (diffangle[c][0] >= 4) ? 4 : ++diffangle[c][0];
-      #         diffangle[c][e] = b;
-      #       }
-      #       if (contract[a] != 0) {
-      #         e = (sameangle[c][0] >= 4) ? 4 : ++sameangle[c][0];
-      #         sameangle[c][e] = b;
-      #       }
-      #     }
-      #   }
-      # }
+      g_conf[0 + 1][0].times do |vv|
+        v = vv + 1
+        g_conf[v + 2][0 + 1].times do |hh|
+          h = hh + 1
+          next if v <= g_conf[0 + 1][1] && h == g_conf[v + 2][0 + 1]
+          break if h >= g_conf[v + 2].length
+          i = h < g_conf[v + 2][1] ? h + 1 : 1
+          u = g_conf[v + 2][h + 1]
+          w = g_conf[v + 2][i + 1]
+          a = edgeno[v][w]
+          b = edgeno[u][w]
+          _c = edgeno[u][v]
+          # どっちかが0なら通過
+          str = '***  ERROR: CONTRACT IS NOT SPARSE  ***'
+          Assert.assert_equal (contract[a].zero? || @contract[b].zero?), true, str
+          #     if (a > c) {
+          #       d = (angle[c][0] >= 4) ? 4 : ++angle[c][0];
+          #       angle[c][d] = a;
+          #       if ((contract[a] == 0) && (contract[b] == 0) && (contract[c] == 0)) {
+          #         e = (diffangle[c][0] >= 4) ? 4 : ++diffangle[c][0];
+          #         diffangle[c][e] = a;
+          #       }
+          #       if (contract[b] != 0) {
+          #         e = (sameangle[c][0] >= 4) ? 4 : ++sameangle[c][0];
+          #         sameangle[c][e] = a;
+          #       }
+          #     }
+          #     if (b > c) {
+          #       d = (angle[c][0] >= 4) ? 4 : ++angle[c][0];
+          #       angle[c][d] = b;
+          #       if ((contract[a] == 0) && (contract[b] == 0) && (contract[c] == 0)) {
+          #         e = (diffangle[c][0] >= 4) ? 4 : ++diffangle[c][0];
+          #         diffangle[c][e] = b;
+          #       }
+          #       if (contract[a] != 0) {
+          #         e = (sameangle[c][0] >= 4) ? 4 : ++sameangle[c][0];
+          #         sameangle[c][e] = b;
+          #       }
+          #     }
+        end
+      end
     end
 
     def angles_sub3(_g_conf)
