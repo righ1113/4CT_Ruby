@@ -61,36 +61,30 @@ module Angles
           w = g_conf[v + 2][i + 1]
           a = edgeno[v][w]
           b = edgeno[u][w]
-          _c = edgeno[u][v]
+          c = edgeno[u][v]
           # どっちかが0なら通過
           str = '***  ERROR: CONTRACT IS NOT SPARSE  ***'
-          Assert.assert_equal (contract[a].zero? || @contract[b].zero?), true, str
-          #     if (a > c) {
-          #       d = (angle[c][0] >= 4) ? 4 : ++angle[c][0];
-          #       angle[c][d] = a;
-          #       if ((contract[a] == 0) && (contract[b] == 0) && (contract[c] == 0)) {
-          #         e = (diffangle[c][0] >= 4) ? 4 : ++diffangle[c][0];
-          #         diffangle[c][e] = a;
-          #       }
-          #       if (contract[b] != 0) {
-          #         e = (sameangle[c][0] >= 4) ? 4 : ++sameangle[c][0];
-          #         sameangle[c][e] = a;
-          #       }
-          #     }
-          #     if (b > c) {
-          #       d = (angle[c][0] >= 4) ? 4 : ++angle[c][0];
-          #       angle[c][d] = b;
-          #       if ((contract[a] == 0) && (contract[b] == 0) && (contract[c] == 0)) {
-          #         e = (diffangle[c][0] >= 4) ? 4 : ++diffangle[c][0];
-          #         diffangle[c][e] = b;
-          #       }
-          #       if (contract[a] != 0) {
-          #         e = (sameangle[c][0] >= 4) ? 4 : ++sameangle[c][0];
-          #         sameangle[c][e] = b;
-          #       }
-          #     }
+          Assert.assert_equal (@contract[a].zero? || @contract[b].zero?), true, str
+          angles_sub2_sub a, b, c
+          angles_sub2_sub b, a, c
         end
       end
+    end
+
+    def angles_sub2_sub(xxx, yyy, ccc)
+      x = xxx
+      y = yyy
+      c = ccc
+      return unless x > c
+      d = @angle[c][0] >= 4 ? 4 : @angle[c][0] += 1
+      @angle[c][d] = x
+      if @contract[x].zero? && @contract[y].zero? && @contract[c].zero?
+        e = @diffangle[c][0] >= 4 ? 4 : @diffangle[c][0] += 1
+        @diffangle[c][e] = x
+      end
+      return unless @contract[y] != 0
+      e = @sameangle[c][0] >= 4 ? 4 : @sameangle[c][0] += 1
+      @sameangle[c][e] = x
     end
 
     def angles_sub3(_g_conf)
