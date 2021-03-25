@@ -87,36 +87,42 @@ module Angles
       @sameangle[c][e] = x
     end
 
-    def angles_sub3(_g_conf)
+    def angles_sub3(g_conf)
       _neighbour = Array.new(Const::MVERTS, false)
-      # /* checking that there is a triad */
-      # if (contract[0] < 4)
-      #   return;
-      # for (v = graph[0+1][1] + 1; v <= graph[0+1][0]; v++) {
-      #   /* v is a candidate triad */
-      #   for (a = 0, i = 1; i <= graph[v+2][0+1]; i++) {
-      #     u = graph[v+2][i+1];
-      #     for (j = 1; j <= 8; j++)
-      #       if (u == graph[2][j]) {
-      #           a++;
-      #           break;
-      #       }
-      #   }
-      #   if (a < 3)
-      #     continue;
-      #   if (graph[v+2][0] >= 6)
-      #     return;
-      #   for (u = 1; u <= graph[0+1][0]; u++)
-      #     neighbour[u] = false;
-      #   for (i = 1; i <= graph[v+2][0+1]; i++)
-      #     neighbour[graph[v+2][i]] = true;
-      #   for (j = 1; j <= 8; j++) {
-      #     if (!neighbour[graph[2][j]])
-      #       return;
-      #   }
-      # }
-      # Debug.Assert(false,
-      #   "         ***  ERROR: CONTRACT HAS NO TRIAD  ***\n\n");
+      # checking that there is a triad
+      return if @contract[0] < 4
+      v = g_conf[0 + 1][1] + 1
+      while v <= g_conf[0 + 1][0]
+        # v is a candidate triad
+        a = 0
+        i = 1
+        while i <= g_conf[v + 2][0 + 1]
+          u = g_conf[v + 2][i + 1]
+          8.times do |jj|
+            j = jj + 1
+            if u == g_conf[2][j]
+              a += 1
+              next
+            end
+          end
+          i += 1
+        end
+
+        # if (a < 3)
+        #   continue;
+        # if (graph[v+2][0] >= 6)
+        #   return;
+        # for (u = 1; u <= graph[0+1][0]; u++)
+        #   neighbour[u] = false;
+        # for (i = 1; i <= graph[v+2][0+1]; i++)
+        #   neighbour[graph[v+2][i]] = true;
+        # for (j = 1; j <= 8; j++) {
+        #   if (!neighbour[graph[2][j]])
+        #     return;
+        # }
+        v += 1
+      end
+      # Assert.assert_equal (1 == 2), true, '***  ERROR: CONTRACT HAS NO TRIAD  ***'
     end
   end
 end
