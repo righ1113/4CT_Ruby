@@ -41,3 +41,6 @@ Style/Semicolon:
 
 Metrics/ClassLength:
   Max: 150
+
+NonLocalExitFromIterator:
+  Enabled: false

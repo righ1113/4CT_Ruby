@@ -72,9 +72,7 @@ module Angles
     end
 
     def angles_sub2_sub(xxx, yyy, ccc)
-      x = xxx
-      y = yyy
-      c = ccc
+      x, y, c = xxx, yyy, ccc
       return unless x > c
       d = @angle[c][0] >= 4 ? 4 : @angle[c][0] += 1
       @angle[c][d] = x
@@ -82,20 +80,19 @@ module Angles
         e = @diffangle[c][0] >= 4 ? 4 : @diffangle[c][0] += 1
         @diffangle[c][e] = x
       end
-      return unless @contract[y] != 0
+      return if @contract[y].zero?
       e = @sameangle[c][0] >= 4 ? 4 : @sameangle[c][0] += 1
       @sameangle[c][e] = x
     end
 
     def angles_sub3(g_conf)
-      _neighbour = Array.new(Const::MVERTS, false)
+      neighbour = Array.new(Const::MVERTS, false)
       # checking that there is a triad
       return if @contract[0] < 4
       v = g_conf[0 + 1][1] + 1
       while v <= g_conf[0 + 1][0]
         # v is a candidate triad
-        a = 0
-        i = 1
+        a, i = 0, 1
         while i <= g_conf[v + 2][0 + 1]
           u = g_conf[v + 2][i + 1]
           8.times do |jj|
@@ -108,21 +105,23 @@ module Angles
           i += 1
         end
 
-        # if (a < 3)
-        #   continue;
-        # if (graph[v+2][0] >= 6)
-        #   return;
-        # for (u = 1; u <= graph[0+1][0]; u++)
-        #   neighbour[u] = false;
-        # for (i = 1; i <= graph[v+2][0+1]; i++)
-        #   neighbour[graph[v+2][i]] = true;
-        # for (j = 1; j <= 8; j++) {
-        #   if (!neighbour[graph[2][j]])
-        #     return;
-        # }
+        next if a < 3
+        return if g_conf[v + 2][0] >= 6
+        g_conf[0 + 1][0].times do |uu|
+          u = uu + 1
+          neighbour[u] = false
+        end
+        g_conf[v + 2][0 + 1].times do |ii|
+          i = ii + 1
+          neighbour[g_conf[v + 2][i]] = true
+        end
+        8.times do |jj|
+          j = jj + 1
+          return unless neighbour[g_conf[2][j]]
+        end
         v += 1
       end
-      # Assert.assert_equal (1 == 2), true, '***  ERROR: CONTRACT HAS NO TRIAD  ***'
+      Assert.assert_equal (1 == 2), true, '***  ERROR: CONTRACT HAS NO TRIAD  ***'
     end
   end
 end
