@@ -72,10 +72,38 @@ module Strip
   end
 end
 
+module Angles
+  class Angles
+    attr_reader angle: Array[Array[Integer]]
+    attr_reader diffangle: Array[Array[Integer]]
+    attr_reader sameangle: Array[Array[Integer]]
+    attr_reader contract: Array[Integer]
+    def initialize: (
+      Array[Array[Integer]] g_conf,
+      Array[Array[Integer]] edgeno
+    ) -> void
+
+    private
+    def angles_sub2: (
+      Array[Array[Integer]] g_conf,
+      Array[Array[Integer]] edgeno
+    ) -> Integer
+    def angles_sub2_sub: (
+      Integer xxx,
+      Integer yyy,
+      Integer ccc
+    ) -> void
+    def angles_sub3: (
+      Array[Array[Integer]] g_conf
+    ) -> void
+  end
+end
+
 class Reduce
   include Strip
   include ReadFile
   include Const
+  include Angles
 
   def self.reduce: -> nil
   def self.c_d_reducible?: (Array[Array[Integer]] g_conf, Integer iii) -> bool

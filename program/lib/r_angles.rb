@@ -55,7 +55,7 @@ module Angles
         g_conf[v + 2][0 + 1].times do |hh|
           h = hh + 1
           next if v <= g_conf[0 + 1][1] && h == g_conf[v + 2][0 + 1]
-          break if h >= g_conf[v + 2].length
+          break 0 if h >= g_conf[v + 2].length
           i = h < g_conf[v + 2][1] ? h + 1 : 1
           u = g_conf[v + 2][h + 1]
           w = g_conf[v + 2][i + 1]
