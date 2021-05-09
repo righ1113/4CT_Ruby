@@ -13,6 +13,7 @@ require '../lib/c_const'
 require '../lib/c_read_file'
 require '../lib/r_strip'
 require '../lib/r_angles'
+require '../lib/r_findlive'
 
 # Reduce クラス
 class Reduce
@@ -20,6 +21,7 @@ class Reduce
   include ReadFile
   include Strip
   include Angles
+  include Findlive
 
   def self.reduce
     # GoodConfsR クラスのインスタンスを作る
@@ -60,6 +62,8 @@ class Reduce
     p angles.angle[1]
 
     # 3. findlive()
+    findlive = Findlive.new
+    p findlive.n_live
 
     # 4. update()
 
