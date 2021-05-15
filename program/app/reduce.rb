@@ -62,7 +62,7 @@ class Reduce
     p angles.angle[1]
 
     # 3. findlive()
-    findlive = Findlive.new g_conf
+    findlive = Findlive.new g_conf, angles.angle
     p findlive.n_live
 
     # 4. update()
