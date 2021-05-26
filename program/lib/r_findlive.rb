@@ -27,7 +27,6 @@ module Findlive
       # computes {\cal C}_0 and stores it in live. That is, computes codes of
       # colorings of the ring that are not restrictions of tri-colorings of the
       # free extension. Returns the number of such codes
-
       ed             = angle[0][2]
       c              = Array.new(Const::EDGES, 0)
       j              = ed - 1
@@ -43,36 +42,36 @@ module Findlive
         while (forbidden[jjj] & ccc[jjj]) != 0
           ccc[jjj] <<= 1
           while (ccc[jjj] & 8) != 0
-            if j >= ed - 1
+            if jjj >= edd - 1
               # Printstatus(ring, ncodes, extent, extentclaim);
               return [ncodes - extent, @live]
             end
             ccc[jjj] <<= 1
           end
         end
-        #   if (j == ring + 1) {
-        #     extent = Record(c, power, ring, angle, live, extent, bigno);
-        #     c[j] <<= 1;
-        #     while ((c[j] & 8) != 0) {
-        #       if (j >= ed - 1) {
-        #           Printstatus(ring, ncodes, extent, extentclaim);
-        #           return ((ncodes - extent), live);
-        #       }
-        #       c[++j] <<= 1;
-        #     }
-        #   }
-        #   else {
-        #     --j;
-        #     if (j < 0) {
-        #         return ((ncodes - extent), live);
-        #     }
-        #     c[j] = 1;
-        #     for (u = 0, i = 1; i <= angle[j][0]; i++) {
-        #       if (i >= 5) break;
-        #       u |= c[angle[j][i]];
-        #     }
-        #     forbidden[j] = u;
-        #   }
+        if jjj == ring + 1
+          #     extent = Record(c, power, ring, angle, live, extent, bigno);
+          ccc[jjj] <<= 1
+          while (ccc[jjj] & 8) != 0
+            if jjj >= edd - 1
+              # Printstatus(ring, ncodes, extent, extentclaim);
+              return [ncodes - extent, @live]
+            end
+            jjj += 1
+            ccc[jjj] <<= 1
+          end
+        else
+          jjj -= 1
+          return [ncodes - extent, @live] if jjj.negative?
+          ccc[jjj] = 1
+          u = 0
+          angle[jjj][0].times do |ii|
+            i = ii + 1
+            break if i >= 5
+            u |= ccc[angle[jjj][i]]
+          end
+          forbidden[jjj] = u
+        end
       end
       # Assert.assert_equal (1 == 2), true, 'findlive_sub : It was not good though it was repeated 262144 times!'
       [-1, @live]
