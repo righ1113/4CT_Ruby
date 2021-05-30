@@ -37,13 +37,14 @@ module Findlive
       @n_live, @live = findlive_sub bigno, angle, ring, ed, extentclaim, ncodes, j, c, forbidden
     end
 
-    def findlive_sub(bigno, angle, ring, edd, extentclaim, ncodes, jjj, ccc, forbidden)
+    def findlive_sub(_bigno, angle, ring, edd, extentclaim, ncodes, jjj, ccc, forbidden)
+      print_status ring, ncodes, 0, extentclaim
       262_144.times do
         while (forbidden[jjj] & ccc[jjj]) != 0
           ccc[jjj] <<= 1
           while (ccc[jjj] & 8) != 0
             if jjj >= edd - 1
-              # Printstatus(ring, ncodes, extent, extentclaim);
+              print_status ring, ncodes, extent, extentclaim
               return [ncodes - extent, @live]
             end
             ccc[jjj] <<= 1
@@ -54,7 +55,7 @@ module Findlive
           ccc[jjj] <<= 1
           while (ccc[jjj] & 8) != 0
             if jjj >= edd - 1
-              # Printstatus(ring, ncodes, extent, extentclaim);
+              print_status ring, ncodes, extent, extentclaim
               return [ncodes - extent, @live]
             end
             jjj += 1
@@ -75,6 +76,16 @@ module Findlive
       end
       # Assert.assert_equal (1 == 2), true, 'findlive_sub : It was not good though it was repeated 262144 times!'
       [-1, @live]
+    end
+
+    def print_status(ring, totalcols, extent, _extentclaim)
+      print "\n\n   This has ring-size #{ring}, so there are #{totalcols} colourings total,\n"
+      print "   and #{Const::SIMATCHNUMBER[ring]} balanced signed matchings.\n"
+      print "\n   There are #{extent} colourings that extend to the configuration."
+      # Assert.assert_equal (extent == extentclaim), true, '***ERROR: DISCREPANCY IN NUMBER OF EXTENDING COLOURINGS***'
+      print "\n\n            remaining               remaining balanced\n"
+      print "           colourings               signed matchings\n"
+      printf "\n             %04d\n", (totalcols - extent)
     end
   end
 end
