@@ -37,8 +37,8 @@ module Findlive
       @n_live, @live = findlive_sub bigno, angle, ring, ed, extentclaim, ncodes, j, c, forbidden
     end
 
-    def findlive_sub(_bigno, angle, ring, edd, extentclaim, ncodes, jjj, ccc, forbidden)
-      print_status ring, ncodes, 0, extentclaim
+    def findlive_sub(bigno, angle, ring, edd, extentclaim, ncodes, jjj, ccc, forbidden)
+      extent = 0
       262_144.times do
         while (forbidden[jjj] & ccc[jjj]) != 0
           ccc[jjj] <<= 1
@@ -51,7 +51,7 @@ module Findlive
           end
         end
         if jjj == ring + 1
-          #     extent = Record(c, power, ring, angle, live, extent, bigno);
+          extent = record ccc, ring, angle, extent, bigno;
           ccc[jjj] <<= 1
           while (ccc[jjj] & 8) != 0
             if jjj >= edd - 1
@@ -76,6 +76,37 @@ module Findlive
       end
       # Assert.assert_equal (1 == 2), true, 'findlive_sub : It was not good though it was repeated 262144 times!'
       [-1, @live]
+    end
+
+    def record(col, ring, angle, extent, bigno)
+      # Given a colouring specified by a 1,2,4-valued function "col", it computes
+      # the corresponding number, checks if it is in live, and if so removes it.
+
+      weight = [0, 0, 0, 0, 0]
+      ring.times do |ii|
+        i = ii + 1
+        sum = 7 - col[angle[i][1]] - col[angle[i][2]]
+        sum = sum >= 5 ? 4 : sum
+        sum = sum <= -1 ? 0 : sum
+        weight[sum] += Const::POWER[i]
+      end
+      min = max = weight[4]
+      2.times do |ii|
+        i = ii + 1
+        w = weight[i]
+        if w < min
+          min = w
+        elsif w > max
+          max = w
+        end
+      end
+      colno = bigno - 2 * min - max
+      if live[colno] != 0
+        extent += 1
+        live[colno] = 0
+      end
+
+      extent
     end
 
     def print_status(ring, totalcols, extent, _extentclaim)
