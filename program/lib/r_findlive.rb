@@ -68,7 +68,7 @@ module Findlive
           u = 0
           angle[jjj][0].times do |ii|
             i = ii + 1
-            break if i >= 5
+            break 0 if i >= 5
             u |= ccc[angle[jjj][i]]
           end
           forbidden[jjj] = u

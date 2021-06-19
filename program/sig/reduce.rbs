@@ -99,6 +99,50 @@ module Angles
   end
 end
 
+module Findlive
+  class Findlive
+    attr_reader n_live: Integer
+    attr_reader live: Array[Integer]
+    def initialize: (
+      Array[Array[Integer]] g_conf,
+      Array[Array[Integer]] angle
+    ) -> void
+
+    private
+    def findlive: (
+      Integer ring,
+      Integer bigno,
+      Integer ncodes,
+      Array[Array[Integer]] angle,
+      Integer extentclaim
+    ) -> void
+    def findlive_sub: (
+      Integer bigno,
+      Array[Array[Integer]] angle,
+      Integer ring,
+      Integer edd,
+      Integer extentclaim,
+      Integer ncodes,
+      Integer jjj,
+      Array[Integer] ccc,
+      Array[Integer] forbidden
+    ) -> void
+    def record: (
+      Array[Integer] col,
+      Integer ring,
+      Array[Array[Integer]] angle,
+      Integer extent,
+      Integer bigno
+    ) -> Integer
+    def print_status: (
+      Integer ring,
+      Integer totalcols,
+      Integer extent,
+      Integer _extentclaim
+    ) -> void
+  end
+end
+
 class Reduce
   include Strip
   include ReadFile
