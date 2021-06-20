@@ -12,6 +12,9 @@ module Const
     MAXLEV: Integer
     MVERTS: Integer
     EDGES: Integer
+    MAXRING: Integer
+    POWER: Array[Integer]
+    SIMATCHNUMBER: Array[Integer]
   end
 
   # class Assert < Minitest::Test
@@ -52,7 +55,7 @@ module ReadFile
 end
 
 module Strip
-  class Strip
+  class StripR
     attr_reader edgeno: Array[Array[Integer]]
     def initialize: (Array[Array[Integer]] g_conf) -> void
 
@@ -73,7 +76,7 @@ module Strip
 end
 
 module Angles
-  class Angles
+  class AnglesR
     attr_reader angle: Array[Array[Integer]]
     attr_reader diffangle: Array[Array[Integer]]
     attr_reader sameangle: Array[Array[Integer]]
@@ -100,7 +103,7 @@ module Angles
 end
 
 module Findlive
-  class Findlive
+  class FindliveR
     attr_reader n_live: Integer
     attr_reader live: Array[Integer]
     def initialize: (
@@ -148,6 +151,7 @@ class Reduce
   include ReadFile
   include Const
   include Angles
+  include Findlive
 
   def self.reduce: -> nil
   def self.c_d_reducible?: (Array[Array[Integer]] g_conf, Integer iii) -> bool

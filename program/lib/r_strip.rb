@@ -4,8 +4,8 @@ require '../lib/c_const'
 
 # Strip モジュール
 module Strip
-  # Strip クラス
-  class Strip
+  # StripR クラス
+  class StripR
     include Const
 
     attr_reader :edgeno

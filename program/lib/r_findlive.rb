@@ -4,8 +4,8 @@ require '../lib/c_const'
 
 # Findlive モジュール
 module Findlive
-  # Findlive クラス
-  class Findlive
+  # FindliveR クラス
+  class FindliveR
     include Const
 
     attr_reader :n_live, :live

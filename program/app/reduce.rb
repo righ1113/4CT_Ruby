@@ -48,7 +48,7 @@ class Reduce
 
     # 1. strip()
     # Strip クラスのインスタンスを作る
-    strip = Strip.new g_conf
+    strip = StripR.new g_conf
     p strip.edgeno[1]
 
     # 2. findangles()
@@ -58,11 +58,11 @@ class Reduce
     # others will not be used unless a contract is specified, and if so
     # they will be used in "checkcontract" below to verify that the
     # contract is correct. *)
-    angles = Angles.new g_conf, strip.edgeno
+    angles = AnglesR.new g_conf, strip.edgeno
     p angles.angle[1]
 
     # 3. findlive()
-    findlive = Findlive.new g_conf, angles.angle
+    findlive = FindliveR.new g_conf, angles.angle
     p findlive.n_live
 
     # 4. update()

@@ -4,8 +4,8 @@ require '../lib/c_const'
 
 # Angles モジュール
 module Angles
-  # Angles クラス
-  class Angles
+  # AnglesR クラス
+  class AnglesR
     include Const
 
     attr_reader :angle, :diffangle, :sameangle, :contract
@@ -109,7 +109,7 @@ module Angles
         return if g_conf[v + 2][0] >= 6
         g_conf[0 + 1][0].times do |uu|
           u = uu + 1
-          neighbour[u] = false
+          neighbour[u.to_i] = false
         end
         g_conf[v + 2][0 + 1].times do |ii|
           i = ii + 1
