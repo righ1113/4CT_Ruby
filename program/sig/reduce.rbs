@@ -38,7 +38,7 @@ module ReadFile
   end
 
   class Tactics < ReadFile
-    attr_reader tacs: Array[bot]
+    attr_reader tacs: Array[Array[String]]
     def initialize: (Integer deg) -> void
 
     private

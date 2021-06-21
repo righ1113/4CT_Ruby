@@ -47,8 +47,10 @@ module ReadFile
     def read_file(deg)
       p 'Tactics read_file() start'
       @tacs = []
-      File.foreach(format('../4ct_data/d_tactics%02<num>d.txt', num: deg)) do |line|
-        tacs << line.chomp.split # chomp: 改行文字を削除
+      File.open(format('../4ct_data/d_tactics%02<num>d.txt', num: deg)) do |f|
+        f.each_line do |line|
+          tacs << line.chomp.split # chomp: 改行文字を削除
+        end
       end
       true
     end

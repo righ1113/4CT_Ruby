@@ -30,7 +30,8 @@ class Reduce
 
     Assert.assertions = 0
 
-    ret = g_confs.data[0..4].each_with_index.all? do |g_conf, i|
+    return if (data = g_confs.data[0..4]).nil?
+    ret = data.each_with_index.all? do |g_conf, i|
       puts ''
       p i
       c_d_reducible? g_conf, i
