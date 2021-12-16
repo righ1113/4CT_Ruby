@@ -5,5 +5,6 @@ target :lib do
   check "program/lib/r_strip.rb"
   check "program/lib/r_angles.rb"
   check "program/lib/r_findlive.rb"
+  check "program/lib/r_update.rb"
   signature "program/sig"
 end

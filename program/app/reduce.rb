@@ -14,6 +14,7 @@ require '../lib/c_read_file'
 require '../lib/r_strip'
 require '../lib/r_angles'
 require '../lib/r_findlive'
+require '../lib/r_update'
 
 # Reduce クラス
 class Reduce
@@ -22,6 +23,7 @@ class Reduce
   include Strip
   include Angles
   include Findlive
+  include Update
 
   def self.reduce
     # GoodConfsR クラスのインスタンスを作る
@@ -67,6 +69,7 @@ class Reduce
     p findlive.n_live
 
     # 4. update()
+    _update = UpdateR.new g_conf, findlive.n_live, findlive.live
 
     # 5. checkContract()
     # This verifies that the set claimed to be a contract for the
