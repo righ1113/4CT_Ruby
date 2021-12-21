@@ -36,8 +36,35 @@ module Update
       true
     end
 
-    def update_sub(_ncodes)
-      false
+    def update_sub(ncodes)
+      # runs through "live" to see which colourings still have `real' signed
+      # matchings sitting on all three pairs of colour classes, and updates "live"
+      # accordingly; returns 1 if nlive got smaller and stayed >0, and 0 otherwise *)
+
+      new_n_live = 0
+      @live2[0] = 15 if @live2[0] > 1
+
+      ncodes.times do |i|
+        if @live2[i] != 15
+          @live2[i] = 0
+        else
+          new_n_live += 1
+          @live2[i] = 1
+        end
+      end
+
+      if new_n_live < @n_live2 && new_n_live.positive?
+        @n_live2 = new_n_live
+        true
+      else
+        if new_n_live.zero?
+          print "\n\n\n                  ***  D-reducible  ***\n"
+        else
+          print "\n\n\n                ***  Not D-reducible  ***"
+        end
+        @n_live2 = new_n_live
+        false
+      end
     end
 
     def testmatch(_ring, _nchar)
