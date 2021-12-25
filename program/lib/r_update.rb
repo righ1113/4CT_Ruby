@@ -26,10 +26,8 @@ module Update
 
     def update(ring, nchar, ncodes)
       i = 0
-      # nlive1、liveに破壊的代入をおこなう
       while i.zero? || (update_sub ncodes)
-        # stillreal()でliveに破壊的代入をおこなう
-        testmatch ring, nchar
+        test_match ring, nchar
         # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real" */
         i += 1
       end
@@ -67,9 +65,82 @@ module Update
       end
     end
 
-    def testmatch(_ring, _nchar)
-      p 7
-      0
+    def test_match(ring, nchar)
+      # This generates all balanced signed matchings, and for each one, tests
+      # whether all associated colourings belong to "live". It writes the answers
+      # in the bits of the characters of "real". *)
+      nreal    = [0]
+      # "nreal" will be the number of balanced signed matchings such that all
+      # associated colourings belong to "live"; ie the total number of nonzero
+      # bits in the entries of "real" *)
+      bit      = [1]
+      realterm = [0]
+      # First, it generates the matchings not incident with the last ring edge
+      matchweight = Array.new(16) { Array.new(16) { Array.new(4, 0) } }
+      interval    = Array.new(10, 0)
+      weight      = Array.new(16) { Array.new(4, 0) }
+
+      (2..ring).each do |a|
+        (1..(a - 1)).each do |b|
+          matchweight[a][b][0] = 2 * (Const::POWER[a] + Const::POWER[b])
+          matchweight[a][b][1] = 2 * (Const::POWER[a] - Const::POWER[b])
+          matchweight[a][b][2] = Const::POWER[a] + Const::POWER[b]
+          matchweight[a][b][3] = Const::POWER[a] - Const::POWER[b]
+        end
+      end
+      (2..(ring - 1)).each do |a|
+        (1..(a - 1)).each do |b|
+          n = 0
+          weight[1] = matchweight[a][b]
+          if b >= 3
+            n = 1
+            interval[1] = 1
+            interval[2] = b - 1
+          end
+          if a >= b + 3
+            n += 1
+            interval[2 * n - 1] = b + 1
+            interval[2 * n]     = a - 1
+          end
+          augment n, interval, 1, weight, matchweight, nreal, ring, 0, 0, bit, realterm, nchar
+        end
+      end
+      # now, the matchings using an edge incident with "ring"
+      (2..ring).each do |a|
+        (1..(a - 1)).each do |b|
+          matchweight[a][b][0] = Const::POWER[a] + Const::POWER[b]
+          matchweight[a][b][1] = Const::POWER[a] - Const::POWER[b]
+          matchweight[a][b][2] = -Const::POWER[a] - Const::POWER[b]
+          matchweight[a][b][3] = -Const::POWER[a] - 2 * Const::POWER[b]
+        end
+      end
+      (1..(ring - 1)).each do |b|
+        n = 0
+        weight[1] = matchweight[ring][b]
+        if b >= 3
+          n = 1
+          interval[1] = 1
+          interval[2] = b - 1
+        end
+        if ring >= b + 3
+          n += 1
+          interval[2 * n - 1] = b + 1
+          interval[2 * n]     = ring - 1
+        end
+        pow = (Const::POWER[ring + 1] - 1) / 2
+        augment n, interval, 1, weight, matchweight, nreal, ring, pow, 1, bit, realterm, nchar
+      end
+      printf '                       %d', nreal[0] # right
+    end
+
+    # def augment(nnn, interval, depth, weight, matchweight, pnreal, ring, basecol, onn, pbit, prealterm, nchar)
+    def augment(_, _, _, _, _, _, _, _, _, _, _, _)
+      # Finds all matchings such that every match is from one of the given
+      # intervals. (The intervals should be disjoint, and ordered with smallest
+      # first, and lower end given first.) For each such matching it examines all
+      # signings of it, and adjusts the corresponding entries in "real" and
+      # "live". *)
+      true
     end
   end
 end

@@ -22,7 +22,7 @@ Security/JSONLoad:
   Enabled: false
 
 Metrics/ParameterLists:
-  Max: 9
+  Max: 12
 
 Style/Next:
   Enabled: false
