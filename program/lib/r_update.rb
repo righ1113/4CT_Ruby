@@ -133,14 +133,49 @@ module Update
       printf '                       %d', nreal[0] # right
     end
 
-    # def augment(nnn, interval, depth, weight, matchweight, pnreal, ring, basecol, onn, pbit, prealterm, nchar)
-    def augment(_, _, _, _, _, _, _, _, _, _, _, _)
+    def augment(nnn, interval, depth, weight, matchweight, pnreal, ring, basecol, onn, pbit, prt, nchar)
       # Finds all matchings such that every match is from one of the given
       # intervals. (The intervals should be disjoint, and ordered with smallest
       # first, and lower end given first.) For each such matching it examines all
       # signings of it, and adjusts the corresponding entries in "real" and
       # "live". *)
+      newinterval = Array.new(10, 0)
+      check_reality depth, weight, pnreal, ring, basecol, onn, pbit, prt, nchar
+      nnn.times do |rr|
+        r = rr + 1
+        lower = interval[2 * r - 1]
+        upper = interval[2 * r]
+        ((lower + 1)..upper).each do |i|
+          (lower..(i - 1)).each do |j|
+            weight[depth + 1] = matchweight[i][j]
+            (2 * r - 2).times do |hh|
+              h = hh + 1
+              newinterval[h] = interval[h]
+            end
+            newn = r - 1
+            h2   = 2 * r - 1
+            if j > lower + 1
+              newn += 1
+              newinterval[h2] = lower
+              h2 += 1
+              newinterval[h2] = j - 1
+              h2 += 1
+            end
+            if i > j + 1
+              newn += 1
+              newinterval[h2] = j + 1
+              h2 += 1
+              newinterval[h2] = i - 1
+              # h2 += 1
+            end
+            # augment newn, newinterval, (depth + 1), weight, matchweight, pnreal, ring, basecol, onn, pbit, prt, nchar
+          end
+        end
+      end
       true
     end
+
+    # def check_reality(depth, weight, pnreal, ring, basecol, on, pbit, prealterm, nchar) = true
+    def check_reality(_, _, _, _, _, _, _, _, _) = true
   end
 end
