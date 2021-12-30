@@ -152,17 +152,17 @@ module Update
               h = hh + 1
               newinterval[h] = interval[h]
             end
-            newn = r - 1
+            # newn = r - 1
             h2   = 2 * r - 1
             if j > lower + 1
-              newn += 1
+              # newn += 1
               newinterval[h2] = lower
               h2 += 1
               newinterval[h2] = j - 1
               h2 += 1
             end
             if i > j + 1
-              newn += 1
+              # newn += 1
               newinterval[h2] = j + 1
               h2 += 1
               newinterval[h2] = i - 1
@@ -175,7 +175,55 @@ module Update
       true
     end
 
-    # def check_reality(depth, weight, pnreal, ring, basecol, on, pbit, prealterm, nchar) = true
-    def check_reality(_, _, _, _, _, _, _, _, _) = true
+    def check_reality(depth, weight, pnreal, ring, basecol, on, pbit, prealterm, _nchar)
+      # For a given matching M, it runs through all signings, and checks which of
+      # them have the property that all associated colourings belong to "live". It
+      # writes the answers into bits of "real", starting at the point specified by
+      # "bit" and "realterm". "basecol" is for convenience in computing the
+      # associated colourings; it is zero for matchings not incident with "ring".
+      # "on" is nonzero iff the matching is incident with "ring". */
+
+      choice = Array.new(8, 0)
+      nbits = 1 << (depth - 1)
+      # k will run through all subsets of M minus the first match */
+      # for (k = 0; k < nbits; k++, pbit <<= 1) do
+      nbits.times do |k|
+        if pbit[0].zero?
+          pbit[0] = 1
+          prealterm[0] += 1
+          # Debug.Assert((prealterm <= nchar), "More than %ld entries in real are needed\n")
+        end
+        next if (pbit[0] & @real[prealterm[0]]).zero?
+        col = basecol
+        parity = ring & 1
+        # for (i = 1, left = k; i < depth; i++, left >>= 1) do
+        left = k
+        depth.times do |i|
+          if (left & 1) != 0	# i.e. if a_i=1, where k=a_1+2a_2+4a_3+... */
+            parity ^= 1 # XOR
+            choice[i] = weight[i][1]
+            col += weight[i][3]
+          else
+            choice[i] = weight[i][0]
+            col += weight[i][2]
+          end
+          left >>= 1
+        end
+        if parity != 0
+          choice[depth] = weight[depth][1]
+          col += weight[depth][3]
+        else
+          choice[depth] = weight[depth][0]
+          col += weight[depth][2]
+        end
+        if !still_real(col, choice, depth, on)
+          @real[prealterm[0]] ^= pbit[0]
+        else
+          pnreal[0] += 1
+        end
+      end
+    end
+
+    def still_real(_, _, _, _) = true
   end
 end

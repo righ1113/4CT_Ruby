@@ -40,7 +40,8 @@ Style/Semicolon:
   Enabled: false
 
 Metrics/ClassLength:
-  Max: 150
+  # Max: 150
+  Max: 400
 
 NonLocalExitFromIterator:
   Enabled: false
