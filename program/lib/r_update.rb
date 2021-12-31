@@ -2,7 +2,7 @@
 
 require '../lib/c_const'
 
-# Update クラスが include する
+# UpdateR クラスが include する
 module StillReal
   include Const
 
