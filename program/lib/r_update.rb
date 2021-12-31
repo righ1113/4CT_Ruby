@@ -2,11 +2,111 @@
 
 require '../lib/c_const'
 
+# Update クラスが include する
+module StillReal
+  include Const
+
+  private
+
+  def augment(nnn, interval, depth, weight, match_w, pnreal, ring, basecol, onn, pbit, prt, nchar, real, live)
+    # Finds all matchings such that every match is from one of the given
+    # intervals. (The intervals should be disjoint, and ordered with smallest
+    # first, and lower end given first.) For each such matching it examines all
+    # signings of it, and adjusts the corresponding entries in "real" and
+    # "live". *)
+    new_i = Array.new(10, 0)
+    check_reality depth, weight, pnreal, ring, basecol, onn, pbit, prt, nchar, real, live
+    nnn.times do |rr|
+      r = rr + 1
+      lower = interval[2 * r - 1]
+      upper = interval[2 * r]
+      ((lower + 1)..upper).each do |i|
+        (lower..(i - 1)).each do |j|
+          weight[depth + 1] = match_w[i][j]
+          (2 * r - 2).times do |hh|
+            h = hh + 1
+            new_i[h] = interval[h]
+          end
+          # newn = r - 1
+          h2   = 2 * r - 1
+          if j > lower + 1
+            # newn += 1
+            new_i[h2] = lower
+            h2 += 1
+            new_i[h2] = j - 1
+            h2 += 1
+          end
+          if i > j + 1
+            # newn += 1
+            new_i[h2] = j + 1
+            h2 += 1
+            new_i[h2] = i - 1
+            # h2 += 1
+          end
+          # augment newn, new_i, (depth + 1), weight, match_w, pnreal, ring, basecol, onn, pbit, prt, nchar, real, live
+        end
+      end
+    end
+    true
+  end
+
+  def check_reality(depth, weight, pnreal, ring, basecol, on, pbit, prealterm, nchar, real, live)
+    # For a given matching M, it runs through all signings, and checks which of
+    # them have the property that all associated colourings belong to "live". It
+    # writes the answers into bits of "real", starting at the point specified by
+    # "bit" and "realterm". "basecol" is for convenience in computing the
+    # associated colourings; it is zero for matchings not incident with "ring".
+    # "on" is nonzero iff the matching is incident with "ring". */
+
+    choice = Array.new(8, 0)
+    nbits = 1 << (depth - 1)
+    # k will run through all subsets of M minus the first match */
+    nbits.times do |k|
+      if pbit[0].zero?
+        pbit[0] = 1
+        prealterm[0] += 1
+        Assert.assert_equal (prealterm <= nchar), true, 'More than %ld entries in real are needed'
+      end
+      next if (pbit[0] & real[prealterm[0]]).zero?
+      col = basecol
+      parity = ring & 1
+      left = k
+      depth.times do |i|
+        if (left & 1) != 0	# i.e. if a_i=1, where k=a_1+2a_2+4a_3+... */
+          parity ^= 1 # XOR
+          choice[i] = weight[i][1]
+          col += weight[i][3]
+        else
+          choice[i] = weight[i][0]
+          col += weight[i][2]
+        end
+        left >>= 1
+      end
+      if parity != 0
+        choice[depth] = weight[depth][1]
+        col += weight[depth][3]
+      else
+        choice[depth] = weight[depth][0]
+        col += weight[depth][2]
+      end
+      if !still_real(col, choice, depth, on, live)
+        real[prealterm[0]] ^= pbit[0]
+      else
+        pnreal[0] += 1
+      end
+      pbit[0] <<= 1
+    end
+  end
+
+  def still_real(_, _, _, _, _) = true
+end
+
 # Update モジュール
 module Update
   # UpdateR クラス
   class UpdateR
     include Const
+    include StillReal
 
     attr_reader :n_live2, :live2
 
@@ -76,22 +176,22 @@ module Update
       bit      = [1]
       realterm = [0]
       # First, it generates the matchings not incident with the last ring edge
-      matchweight = Array.new(16) { Array.new(16) { Array.new(4, 0) } }
-      interval    = Array.new(10, 0)
-      weight      = Array.new(16) { Array.new(4, 0) }
+      match_w  = Array.new(16) { Array.new(16) { Array.new(4, 0) } }
+      interval = Array.new(10, 0)
+      weight   = Array.new(16) { Array.new(4, 0) }
 
       (2..ring).each do |a|
         (1..(a - 1)).each do |b|
-          matchweight[a][b][0] = 2 * (Const::POWER[a] + Const::POWER[b])
-          matchweight[a][b][1] = 2 * (Const::POWER[a] - Const::POWER[b])
-          matchweight[a][b][2] = Const::POWER[a] + Const::POWER[b]
-          matchweight[a][b][3] = Const::POWER[a] - Const::POWER[b]
+          match_w[a][b][0] = 2 * (Const::POWER[a] + Const::POWER[b])
+          match_w[a][b][1] = 2 * (Const::POWER[a] - Const::POWER[b])
+          match_w[a][b][2] = Const::POWER[a] + Const::POWER[b]
+          match_w[a][b][3] = Const::POWER[a] - Const::POWER[b]
         end
       end
       (2..(ring - 1)).each do |a|
         (1..(a - 1)).each do |b|
           n = 0
-          weight[1] = matchweight[a][b]
+          weight[1] = match_w[a][b]
           if b >= 3
             n = 1
             interval[1] = 1
@@ -102,21 +202,21 @@ module Update
             interval[2 * n - 1] = b + 1
             interval[2 * n]     = a - 1
           end
-          augment n, interval, 1, weight, matchweight, nreal, ring, 0, 0, bit, realterm, nchar
+          augment n, interval, 1, weight, match_w, nreal, ring, 0, 0, bit, realterm, nchar, @real, @live2
         end
       end
       # now, the matchings using an edge incident with "ring"
       (2..ring).each do |a|
         (1..(a - 1)).each do |b|
-          matchweight[a][b][0] = Const::POWER[a] + Const::POWER[b]
-          matchweight[a][b][1] = Const::POWER[a] - Const::POWER[b]
-          matchweight[a][b][2] = -Const::POWER[a] - Const::POWER[b]
-          matchweight[a][b][3] = -Const::POWER[a] - 2 * Const::POWER[b]
+          match_w[a][b][0] = Const::POWER[a] + Const::POWER[b]
+          match_w[a][b][1] = Const::POWER[a] - Const::POWER[b]
+          match_w[a][b][2] = -Const::POWER[a] - Const::POWER[b]
+          match_w[a][b][3] = -Const::POWER[a] - 2 * Const::POWER[b]
         end
       end
       (1..(ring - 1)).each do |b|
         n = 0
-        weight[1] = matchweight[ring][b]
+        weight[1] = match_w[ring][b]
         if b >= 3
           n = 1
           interval[1] = 1
@@ -128,102 +228,9 @@ module Update
           interval[2 * n]     = ring - 1
         end
         pow = (Const::POWER[ring + 1] - 1) / 2
-        augment n, interval, 1, weight, matchweight, nreal, ring, pow, 1, bit, realterm, nchar
+        augment n, interval, 1, weight, match_w, nreal, ring, pow, 1, bit, realterm, nchar, @real, @live2
       end
       printf '                       %d', nreal[0] # right
     end
-
-    def augment(nnn, interval, depth, weight, matchweight, pnreal, ring, basecol, onn, pbit, prt, nchar)
-      # Finds all matchings such that every match is from one of the given
-      # intervals. (The intervals should be disjoint, and ordered with smallest
-      # first, and lower end given first.) For each such matching it examines all
-      # signings of it, and adjusts the corresponding entries in "real" and
-      # "live". *)
-      newinterval = Array.new(10, 0)
-      check_reality depth, weight, pnreal, ring, basecol, onn, pbit, prt, nchar
-      nnn.times do |rr|
-        r = rr + 1
-        lower = interval[2 * r - 1]
-        upper = interval[2 * r]
-        ((lower + 1)..upper).each do |i|
-          (lower..(i - 1)).each do |j|
-            weight[depth + 1] = matchweight[i][j]
-            (2 * r - 2).times do |hh|
-              h = hh + 1
-              newinterval[h] = interval[h]
-            end
-            # newn = r - 1
-            h2   = 2 * r - 1
-            if j > lower + 1
-              # newn += 1
-              newinterval[h2] = lower
-              h2 += 1
-              newinterval[h2] = j - 1
-              h2 += 1
-            end
-            if i > j + 1
-              # newn += 1
-              newinterval[h2] = j + 1
-              h2 += 1
-              newinterval[h2] = i - 1
-              # h2 += 1
-            end
-            # augment newn, newinterval, (depth + 1), weight, matchweight, pnreal, ring, basecol, onn, pbit, prt, nchar
-          end
-        end
-      end
-      true
-    end
-
-    def check_reality(depth, weight, pnreal, ring, basecol, on, pbit, prealterm, _nchar)
-      # For a given matching M, it runs through all signings, and checks which of
-      # them have the property that all associated colourings belong to "live". It
-      # writes the answers into bits of "real", starting at the point specified by
-      # "bit" and "realterm". "basecol" is for convenience in computing the
-      # associated colourings; it is zero for matchings not incident with "ring".
-      # "on" is nonzero iff the matching is incident with "ring". */
-
-      choice = Array.new(8, 0)
-      nbits = 1 << (depth - 1)
-      # k will run through all subsets of M minus the first match */
-      # for (k = 0; k < nbits; k++, pbit <<= 1) do
-      nbits.times do |k|
-        if pbit[0].zero?
-          pbit[0] = 1
-          prealterm[0] += 1
-          # Debug.Assert((prealterm <= nchar), "More than %ld entries in real are needed\n")
-        end
-        next if (pbit[0] & @real[prealterm[0]]).zero?
-        col = basecol
-        parity = ring & 1
-        # for (i = 1, left = k; i < depth; i++, left >>= 1) do
-        left = k
-        depth.times do |i|
-          if (left & 1) != 0	# i.e. if a_i=1, where k=a_1+2a_2+4a_3+... */
-            parity ^= 1 # XOR
-            choice[i] = weight[i][1]
-            col += weight[i][3]
-          else
-            choice[i] = weight[i][0]
-            col += weight[i][2]
-          end
-          left >>= 1
-        end
-        if parity != 0
-          choice[depth] = weight[depth][1]
-          col += weight[depth][3]
-        else
-          choice[depth] = weight[depth][0]
-          col += weight[depth][2]
-        end
-        if !still_real(col, choice, depth, on)
-          @real[prealterm[0]] ^= pbit[0]
-        else
-          pnreal[0] += 1
-        end
-      end
-    end
-
-    def still_real(_, _, _, _) = true
   end
 end

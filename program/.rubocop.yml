@@ -22,7 +22,7 @@ Security/JSONLoad:
   Enabled: false
 
 Metrics/ParameterLists:
-  Max: 12
+  Max: 14
 
 Style/Next:
   Enabled: false
@@ -40,8 +40,7 @@ Style/Semicolon:
   Enabled: false
 
 Metrics/ClassLength:
-  # Max: 150
-  Max: 400
+  Max: 200
 
 NonLocalExitFromIterator:
   Enabled: false
