@@ -98,7 +98,45 @@ module StillReal
     end
   end
 
-  def still_real(_, _, _, _, _) = true
+  def still_real(col, choice, depth, _onn, live)
+    # Given a signed matching, this checks if all associated colourings are in
+    # "live", and, if so, records that fact on the bits of the corresponding
+    # entries of "live". */
+    sum       = Array.new(64, 0)
+    twisted   = Array.new(64, 0)
+    untwisted = Array.new(64, 0)
+
+    ntwisted = nuntwisted = 0
+    if col.negative?
+      return false if (live[-col]).zero?
+      ntwisted += 1
+      twisted[ntwisted] = -col
+      sum[0] = col
+    else
+      return false if (live[col]).zero?
+      nuntwisted += 1
+      untwisted[nuntwisted] = sum[0] = col
+    end
+    twopower = mark = 1
+    2.upto(depth) do |i|
+      c = choice[i]
+      twopower.times do |j|
+        b = sum[j] - c
+        if b.negative?
+          return false if (live[-b]).zero?
+          ntwisted += 1
+          twisted[ntwisted] = -b
+          sum[mark] = b
+        else
+          return false if (live[b]).zero?
+          nuntwisted += 1
+          untwisted[nuntwisted] = sum[mark] = b
+        end
+        mark += 1
+      end
+      twopower <<= 1
+    end
+  end
 end
 
 # Update モジュール

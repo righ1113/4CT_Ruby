@@ -39,6 +39,8 @@ Metrics/BlockLength:
 Style/Semicolon:
   Enabled: false
 
+Metrics/ModuleLength:
+  Max: 200
 Metrics/ClassLength:
   Max: 200
 
