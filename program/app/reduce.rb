@@ -26,15 +26,14 @@ class Reduce
   include Update
 
   def self.reduce
-    # GoodConfsR クラスのインスタンスを作る
     g_confs = GoodConfsR.new
     # p g_confs.data[1][0][1] # => 122
 
     Assert.assertions = 0
 
-    return if (data = g_confs.data[0..4]).nil?
-    ret = data.each_with_index.all? do |g_conf, i|
-      puts ''
+    # return if (data = g_confs.data[0..4]).nil?
+    ret = g_confs.data.each_with_index.all? do |g_conf, i|
+      # puts ''
       p i
       c_d_reducible? g_conf, i
     end
@@ -50,7 +49,6 @@ class Reduce
     # p g_conf[0][1]
 
     # 1. strip()
-    # Strip クラスのインスタンスを作る
     strip = StripR.new g_conf
     # p strip.edgeno[1]
 
