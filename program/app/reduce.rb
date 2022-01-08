@@ -46,13 +46,13 @@ class Reduce
   end
 
   def self.c_d_reducible?(g_conf, iii)
-    puts 'start c_d_reducible?()'
-    p g_conf[0][1]
+    # puts 'start c_d_reducible?()'
+    # p g_conf[0][1]
 
     # 1. strip()
     # Strip クラスのインスタンスを作る
     strip = StripR.new g_conf
-    p strip.edgeno[1]
+    # p strip.edgeno[1]
 
     # 2. findangles()
     # "findangles" fills in the arrays "angle","diffangle","sameangle" and
@@ -62,11 +62,11 @@ class Reduce
     # they will be used in "checkcontract" below to verify that the
     # contract is correct. *)
     angles = AnglesR.new g_conf, strip.edgeno
-    p angles.angle[1]
+    # p angles.angle[1]
 
     # 3. findlive()
     findlive = FindliveR.new g_conf, angles.angle
-    p findlive.n_live
+    # p findlive.n_live
 
     # 4. update()
     _update = UpdateR.new g_conf, findlive.n_live, findlive.live

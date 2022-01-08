@@ -47,6 +47,7 @@ module Findlive
               print_status ring, ncodes, extent, extentclaim
               return [ncodes - extent, @live]
             end
+            jjj += 1
             ccc[jjj] <<= 1
           end
         end
@@ -116,7 +117,7 @@ module Findlive
       # Assert.assert_equal (extent == extentclaim), true, '***ERROR: DISCREPANCY IN NUMBER OF EXTENDING COLOURINGS***'
       print "\n\n            remaining               remaining balanced\n"
       print "           colourings               signed matchings\n"
-      printf "\n             %04d\n", (totalcols - extent)
+      printf "\n             %04d", (totalcols - extent)
     end
   end
 end

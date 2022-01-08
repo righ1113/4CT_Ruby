@@ -27,23 +27,23 @@ module StillReal
             h = hh + 1
             new_i[h] = interval[h]
           end
-          # newn = r - 1
+          newn = r - 1
           h2   = 2 * r - 1
           if j > lower + 1
-            # newn += 1
+            newn += 1
             new_i[h2] = lower
             h2 += 1
             new_i[h2] = j - 1
             h2 += 1
           end
           if i > j + 1
-            # newn += 1
+            newn += 1
             new_i[h2] = j + 1
             h2 += 1
             new_i[h2] = i - 1
             # h2 += 1
           end
-          # augment newn, new_i, (depth + 1), weight, match_w, pnreal, ring, basecol, onn, pbit, prt, nchar, real, live
+          augment newn, new_i, (depth + 1), weight, match_w, pnreal, ring, basecol, onn, pbit, prt, nchar, real, live
         end
       end
     end
@@ -189,6 +189,8 @@ module Update
         end
       end
 
+      printf '             %4d', new_n_live
+
       if new_n_live < @n_live2 && new_n_live.positive?
         @n_live2 = new_n_live
         true
@@ -268,7 +270,7 @@ module Update
         pow = (Const::POWER[ring + 1] - 1) / 2
         augment n, interval, 1, weight, match_w, nreal, ring, pow, 1, bit, realterm, nchar, @real, @live2
       end
-      printf '                       %d', nreal[0] # right
+      printf "                       %d\n", nreal[0] # right
     end
   end
 end
