@@ -39,7 +39,6 @@ module Strip
         # First we find all vertices from the interior that meet the "done"
         # vertices in an interval, and write them in max[1] .. max[maxes]
         maxint = maxes = 0
-
         ((ring + 1)..verts).each do |v|
           next if done[v]
           inter = in_interval g_conf[v + 2], done
@@ -61,8 +60,7 @@ module Strip
 
         d        = g_conf[best + 2][0 + 1]
         first    = 1
-        previous = done[g_conf[best + 2][d + 1]] # 多重代入できなかった
-
+        previous = done[g_conf[best + 2][d + 1]] # この3行、多重代入できなかった
         while previous || !done[g_conf[best + 2][first + 1]]
           previous = done[g_conf[best + 2][1 + first]]
           first += 1
@@ -84,20 +82,14 @@ module Strip
 
     def in_interval(grav, done)
       d = grav[0 + 1]
-
-      first = 1
-      first += 1 while first < d && !done[grav[first + 1]]
+      first = in_get d, 1, true, done, grav
       return (done[grav[d + 1]] ? 1 : 0) if first == d
-
-      last = first
-      last += 1 while last < d && done[grav[1 + last + 1]]
+      last = in_get d, first, false, done, grav
       length = last - first + 1
       return length if last == d
 
-      if first > 1
-        ((last + 2)..d).each { |j| return 0 if done[grav[j + 1]] }
-        return length
-      end
+      (((last + 2)..d).each { |j| return 0 if done[grav[j + 1]] }; return length) if first > 1
+
       worried = false
       ((last + 2)..d).each do |j|
         if done[grav[j + 1]]
@@ -107,6 +99,11 @@ module Strip
         end
       end
       length
+    end
+
+    def in_get(ddd, xxx, f_flg, done, grav)
+      f_flg ? (xxx += 1 while xxx < ddd && !done[grav[xxx + 1]]) : (xxx += 1 while xxx < ddd && done[grav[1 + xxx + 1]])
+      xxx
     end
 
     def strip_sub3(g_conf, ring, done, term)
@@ -123,16 +120,10 @@ module Strip
         end
 
         grav, u = g_conf[best + 2], best > 1 ? best - 1 : ring
-        if done[u]
-          (2..(grav[0 + 1] - 1)).reverse_each do |h|
-            @edgeno[best][grav[h + 1]] = @edgeno[grav[h + 1]][best] = term
-            term -= 1
-          end
-        else
-          (2..(grav[0 + 1] - 1)).each do |h|
-            @edgeno[best][grav[h + 1]] = @edgeno[grav[h + 1]][best] = term
-            term -= 1
-          end
+        my_each = done[u] ? (2..(grav[0 + 1] - 1)).reverse_each : (2..(grav[0 + 1] - 1)).each
+        my_each.with_index do |h, _|
+          @edgeno[best][grav[h + 1]] = @edgeno[grav[h + 1]][best] = term
+          term -= 1
         end
         done[best] = true
       end

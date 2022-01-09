@@ -67,6 +67,7 @@ module Strip
       Array[bool] done,
       Integer term) -> Integer
     def in_interval: (Array[Integer], Array[bool] done) -> Integer
+    def in_get: (Integer, Integer, bool, Array[bool] done, Array[Integer]) -> Integer
     def strip_sub3: (
       Array[Array[Integer]] g_conf,
       Integer ring,
