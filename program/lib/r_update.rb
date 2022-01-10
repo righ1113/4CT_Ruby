@@ -16,8 +16,7 @@ module StillReal
     # "live". *)
     new_i = Array.new(10, 0)
     check_reality depth, weight, pnreal, ring, basecol, onn, pbit, prt, nchar, real, live
-    nnn.times do |rr|
-      r = rr + 1
+    (1..nnn).each do |r|
       lower = interval[2 * r - 1]
       upper = interval[2 * r]
       ((lower + 1)..upper).each do |i|
@@ -27,8 +26,7 @@ module StillReal
             h = hh + 1
             new_i[h] = interval[h]
           end
-          newn = r - 1
-          h2   = 2 * r - 1
+          newn, h2 = r - 1, 2 * r - 1
           if j > lower + 1
             newn += 1
             new_i[h2] = lower
@@ -98,7 +96,7 @@ module StillReal
     end
   end
 
-  def still_real(col, choice, depth, _onn, live)
+  def still_real(col, choice, depth, onn, live)
     # Given a signed matching, this checks if all associated colourings are in
     # "live", and, if so, records that fact on the bits of the corresponding
     # entries of "live". */
@@ -123,7 +121,7 @@ module StillReal
       twopower.times do |j|
         b = sum[j] - c
         if b.negative?
-          return false if (live[-b]).zero?
+          return false if (live[-b]).zero? # b が負の場合
           ntwisted += 1
           twisted[ntwisted] = -b
           sum[mark] = b
@@ -136,6 +134,18 @@ module StillReal
       end
       twopower <<= 1
     end
+
+    # Now we know that every coloring that theta-fits M has its code in
+    # "live". We mark the corresponding entry of "live" by theta, that is,
+    # set its second, third or fourth bit to 1 */
+    if onn != 0
+      ntwisted.times   { |i| live[twisted[i]]   |= 8 }
+      nuntwisted.times { |i| live[untwisted[i]] |= 4 }
+    else
+      ntwisted.times   { |i| live[twisted[i]]   |= 2 }
+      nuntwisted.times { |i| live[untwisted[i]] |= 2 }
+    end
+    true
   end
 end
 
@@ -164,7 +174,7 @@ module Update
 
     def update(ring, nchar, ncodes)
       i = 0
-      while i.zero? || (update_sub ncodes)
+      while i.zero? || (update_sub? ncodes)
         test_match ring, nchar
         # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real" */
         i += 1
@@ -172,11 +182,10 @@ module Update
       true
     end
 
-    def update_sub(ncodes)
+    def update_sub?(ncodes)
       # runs through "live" to see which colourings still have `real' signed
       # matchings sitting on all three pairs of colour classes, and updates "live"
       # accordingly; returns 1 if nlive got smaller and stayed >0, and 0 otherwise *)
-
       new_n_live = 0
       @live2[0] = 15 if @live2[0] > 1
 
@@ -189,7 +198,7 @@ module Update
         end
       end
 
-      printf '             %4d', new_n_live
+      printf '             %4d', new_n_live # left
 
       if new_n_live < @n_live2 && new_n_live.positive?
         @n_live2 = new_n_live
