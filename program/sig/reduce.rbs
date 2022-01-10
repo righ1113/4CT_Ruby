@@ -91,7 +91,7 @@ module Angles
     def angles_sub2: (
       Array[Array[Integer]] g_conf,
       Array[Array[Integer]] edgeno
-    ) -> Integer
+    ) -> bool
     def angles_sub2_sub: (
       Integer xxx,
       Integer yyy,
@@ -99,7 +99,7 @@ module Angles
     ) -> void
     def angles_sub3: (
       Array[Array[Integer]] g_conf
-    ) -> void
+    ) -> bool
   end
 end
 
