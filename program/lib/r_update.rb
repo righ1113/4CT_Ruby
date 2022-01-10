@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require '../lib/c_const'
+require 'active_support'
+require 'active_support/core_ext'
 
 # UpdateR クラスが include する
 module StillReal
@@ -22,10 +24,7 @@ module StillReal
       ((lower + 1)..upper).each do |i|
         (lower..(i - 1)).each do |j|
           weight[depth + 1] = match_w[i][j]
-          (2 * r - 2).times do |hh|
-            h = hh + 1
-            new_i[h] = interval[h]
-          end
+          (1..(2 * r - 2)).each { |h| new_i[h] = interval[h] }
           newn, h2 = r - 1, 2 * r - 1
           if j > lower + 1
             newn += 1
@@ -63,13 +62,11 @@ module StillReal
       if pbit[0].zero?
         pbit[0] = 1
         prealterm[0] += 1
-        Assert.assert_equal (prealterm <= nchar), true, 'More than %ld entries in real are needed'
+        Assert.assert_equal (prealterm[0] <= nchar), true, 'More than %ld entries in real are needed'
       end
       next if (pbit[0] & real[prealterm[0]]).zero?
-      col = basecol
-      parity = ring & 1
-      left = k
-      depth.times do |i|
+      col, parity, left = basecol, ring & 1, k
+      (1..(depth - 1)).each do |i|
         if (left & 1) != 0	# i.e. if a_i=1, where k=a_1+2a_2+4a_3+... */
           parity ^= 1 # XOR
           choice[i] = weight[i][1]
@@ -87,16 +84,17 @@ module StillReal
         choice[depth] = weight[depth][0]
         col += weight[depth][2]
       end
-      if !still_real(col, choice, depth, on, live)
-        real[prealterm[0]] ^= pbit[0]
-      else
+      if still_real?(col, choice, depth, on, live)
         pnreal[0] += 1
+      else
+        real[prealterm[0]] ^= pbit[0]
       end
       pbit[0] <<= 1
+      pbit[0] = 0 if pbit[0] > 255
     end
   end
 
-  def still_real(col, choice, depth, onn, live)
+  def still_real?(col, choice, depth, onn, live)
     # Given a signed matching, this checks if all associated colourings are in
     # "live", and, if so, records that fact on the bits of the corresponding
     # entries of "live". */
@@ -165,7 +163,7 @@ module Update
       nchar   = Const::SIMATCHNUMBER[ring] / 8 + 1
 
       # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real"
-      @n_live2, @live2 = n_live, live
+      @n_live2, @live2 = n_live, live.deep_dup
       update ring, nchar, ncodes
       # computes {\cal C}_{i+1} from {\cal C}_i, updates "live"
     end
@@ -222,7 +220,7 @@ module Update
       # "nreal" will be the number of balanced signed matchings such that all
       # associated colourings belong to "live"; ie the total number of nonzero
       # bits in the entries of "real" *)
-      bit      = [1]
+      bit      = [1] # -128~127
       realterm = [0]
       # First, it generates the matchings not incident with the last ring edge
       match_w  = Array.new(16) { Array.new(16) { Array.new(4, 0) } }
@@ -237,6 +235,7 @@ module Update
           match_w[a][b][3] = Const::POWER[a] - Const::POWER[b]
         end
       end
+
       (2..(ring - 1)).each do |a|
         (1..(a - 1)).each do |b|
           n = 0
@@ -254,6 +253,7 @@ module Update
           augment n, interval, 1, weight, match_w, nreal, ring, 0, 0, bit, realterm, nchar, @real, @live2
         end
       end
+
       # now, the matchings using an edge incident with "ring"
       (2..ring).each do |a|
         (1..(a - 1)).each do |b|
@@ -263,6 +263,7 @@ module Update
           match_w[a][b][3] = -Const::POWER[a] - 2 * Const::POWER[b]
         end
       end
+
       (1..(ring - 1)).each do |b|
         n = 0
         weight[1] = match_w[ring][b]
