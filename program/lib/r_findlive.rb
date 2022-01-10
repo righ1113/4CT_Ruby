@@ -46,7 +46,7 @@ module Findlive
         end
 
         if jjj == ring + 1
-          extent = record ccc, ring, angle, extent, bigno;
+          extent = record ccc, ring, angle, extent, bigno
           ccc[jjj] <<= 1
           while (ccc[jjj] & 8) != 0
             (print_status ring, ncodes, extent, extentclaim; return [ncodes - extent, @live]) if jjj >= edd - 1
@@ -57,12 +57,12 @@ module Findlive
           jjj -= 1
           return [ncodes - extent, @live] if jjj.negative?
           ccc[jjj], u = 1, 0
-          (1..angle[jjj][0]).each { |i| break (0..1) if i >= 5; u |= ccc[angle[jjj][i]] }
+          (1..angle[jjj][0]).each { |i| u |= ccc[angle[jjj][i]] }
           forbidden[jjj] = u
         end
       end
       Assert.assert_equal (1 == 2), true, 'findlive_sub : It was not good though it was repeated 262144 times!'
-      [-1, @live]
+      [-1, @live] # ここには来ない
     end
 
     def record(col, ring, angle, extent, bigno)
@@ -71,8 +71,8 @@ module Findlive
       weight = [0, 0, 0, 0, 0]
       (1..ring).each do |i|
         sum = 7 - col[angle[i][1]] - col[angle[i][2]]
-        sum = sum >= 5 ? 4 : sum
-        sum = sum <= -1 ? 0 : sum
+        # sum = sum >= 5 ? 4 : sum
+        # sum = sum <= -1 ? 0 : sum
         weight[sum] += Const::POWER[i]
       end
 
@@ -95,6 +95,7 @@ module Findlive
       print "\n\n   This has ring-size #{ring}, so there are #{totalcols} colourings total,\n"
       print "   and #{Const::SIMATCHNUMBER[ring]} balanced signed matchings.\n"
       print "\n   There are #{extent} colourings that extend to the configuration."
+      print " #{extent} #{extentclaim}"
       Assert.assert_equal (extent == extentclaim), true, '***ERROR: DISCREPANCY IN NUMBER OF EXTENDING COLOURINGS***'
       print "\n\n            remaining               remaining balanced\n"
       print "           colourings               signed matchings\n"

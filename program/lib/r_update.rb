@@ -229,8 +229,8 @@ module Update
 
       (2..ring).each do |a|
         (1..(a - 1)).each do |b|
-          match_w[a][b][0] = 2 * (Const::POWER[a] + Const::POWER[b])
-          match_w[a][b][1] = 2 * (Const::POWER[a] - Const::POWER[b])
+          match_w[a][b][0] = (Const::POWER[a] + Const::POWER[b]) * 2
+          match_w[a][b][1] = (Const::POWER[a] - Const::POWER[b]) * 2
           match_w[a][b][2] = Const::POWER[a] + Const::POWER[b]
           match_w[a][b][3] = Const::POWER[a] - Const::POWER[b]
         end

@@ -35,6 +35,7 @@ class Reduce
     ret = g_confs.data.each_with_index.all? do |g_conf, i|
       # puts ''
       p i
+      # next true if i == 7
       c_d_reducible? g_conf, i
     end
     if ret
@@ -73,7 +74,7 @@ class Reduce
     # This verifies that the set claimed to be a contract for the
     # configuration really is.
 
-    iii != 4
+    iii != 24
   end
 end
 
