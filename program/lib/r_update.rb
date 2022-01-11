@@ -94,7 +94,7 @@ module StillReal
     end
   end
 
-  def still_real?(col, choice, depth, onn, live)
+  def still_real?(col, choice, depth, on, live)
     # Given a signed matching, this checks if all associated colourings are in
     # "live", and, if so, records that fact on the bits of the corresponding
     # entries of "live". */
@@ -102,16 +102,16 @@ module StillReal
     twisted   = Array.new(64, 0)
     untwisted = Array.new(64, 0)
 
-    ntwisted = nuntwisted = 0
+    n_twisted = n_untwisted = 0
     if col.negative?
       return false if (live[-col]).zero?
-      ntwisted += 1
-      twisted[ntwisted] = -col
+      twisted[n_twisted] = -col
+      n_twisted += 1
       sum[0] = col
     else
       return false if (live[col]).zero?
-      nuntwisted += 1
-      untwisted[nuntwisted] = sum[0] = col
+      untwisted[n_untwisted] = sum[0] = col
+      n_untwisted += 1
     end
     twopower = mark = 1
     2.upto(depth) do |i|
@@ -120,13 +120,13 @@ module StillReal
         b = sum[j] - c
         if b.negative?
           return false if (live[-b]).zero? # b が負の場合
-          ntwisted += 1
-          twisted[ntwisted] = -b
+          twisted[n_twisted] = -b
+          n_twisted += 1
           sum[mark] = b
         else
           return false if (live[b]).zero?
-          nuntwisted += 1
-          untwisted[nuntwisted] = sum[mark] = b
+          untwisted[n_untwisted] = sum[mark] = b
+          n_untwisted += 1
         end
         mark += 1
       end
@@ -136,12 +136,12 @@ module StillReal
     # Now we know that every coloring that theta-fits M has its code in
     # "live". We mark the corresponding entry of "live" by theta, that is,
     # set its second, third or fourth bit to 1 */
-    if onn != 0
-      ntwisted.times   { |i| live[twisted[i]]   |= 8 }
-      nuntwisted.times { |i| live[untwisted[i]] |= 4 }
+    if on.zero?
+      n_twisted.times   { |i| live[twisted[i]]   |= 2 }
+      n_untwisted.times { |i| live[untwisted[i]] |= 2 }
     else
-      ntwisted.times   { |i| live[twisted[i]]   |= 2 }
-      nuntwisted.times { |i| live[untwisted[i]] |= 2 }
+      n_twisted.times   { |i| live[twisted[i]]   |= 8 }
+      n_untwisted.times { |i| live[untwisted[i]] |= 4 }
     end
     true
   end
@@ -187,15 +187,7 @@ module Update
       new_n_live = 0
       @live2[0] = 15 if @live2[0] > 1
 
-      ncodes.times do |i|
-        if @live2[i] != 15
-          @live2[i] = 0
-        else
-          new_n_live += 1
-          @live2[i] = 1
-        end
-      end
-
+      ncodes.times { |i| @live2[i] == 15 ? (new_n_live += 1; @live2[i] = 1) : @live2[i] = 0 }
       printf '             %4d', new_n_live # left
 
       if new_n_live < @n_live2 && new_n_live.positive?
