@@ -147,6 +147,55 @@ module Findlive
   end
 end
 
+
+module StillReal
+  def augment: (
+    Integer nnn,
+    Array[Integer] interval,
+    Integer depth,
+    Array[Array[Integer]] weight,
+    Array[Array[Array[Integer]]] match_w,
+    Array[Integer] pnreal,
+    Integer ring,
+    Integer basecol,
+    Integer onn,
+    Array[Integer] pbit,
+    Array[Integer] prt,
+    Integer nchar,
+    Array[Integer] real,
+    Array[Integer] live
+  ) -> bool
+  def check_reality: (
+    Integer depth,
+    Array[Array[Integer]] weight,
+    Array[Integer] pnreal,
+    Integer ring,
+    Integer basecol,
+    Integer on,
+    Array[Integer] pbit,
+    Array[Integer] prealterm,
+    Integer nchar,
+    Array[Integer] real,
+    Array[Integer] live
+  ) -> void
+  def bit_lshift: (Array[Integer] pbit) -> bool
+  def still_real?: (Integer col, Array[Integer] choice, Integer depth, Integer on, Array[Integer] live) -> bool
+end
+
+module Update
+  class UpdateR
+    include StillReal
+    attr_reader n_live2: Integer
+    attr_reader live2: Array[Integer]
+    def initialize: (Array[Array[Integer]] g_conf, Integer n_live, Array[Integer] live) -> void
+    private
+    def update: (Integer ring, Integer nchar, Integer ncodes, Array[Integer] real) -> bool
+    def update_sub?: (Integer ncodes) -> bool
+    def test_match: (Integer ring, Integer nchar, Array[Integer] real) -> void
+  end
+end
+
+
 class Reduce
   include Strip
   include ReadFile

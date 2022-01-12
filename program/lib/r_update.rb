@@ -178,7 +178,8 @@ module Update
       nchar   = Const::SIMATCHNUMBER[ring] / 8 + 1
 
       # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real"
-      @n_live2, @live2 = n_live, live.deep_dup
+      # @n_live2, @live2 = n_live, live.deep_dup
+      @n_live2, @live2 = n_live, live
       update ring, nchar, ncodes, real
       # computes {\cal C}_{i+1} from {\cal C}_i, updates "live"
     end
