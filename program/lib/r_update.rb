@@ -64,7 +64,7 @@ module StillReal
         prealterm[0] += 1
         Assert.assert_equal (prealterm[0] <= nchar), true, 'More than %ld entries in real are needed'
       end
-      next if (pbit[0] & real[prealterm[0]]).zero?
+      (bit_lshift(pbit); next) if (pbit[0] & real[prealterm[0]]).zero?
       col, parity, left = basecol, ring & 1, k
       (1..(depth - 1)).each do |i|
         if (left & 1) != 0	# i.e. if a_i=1, where k=a_1+2a_2+4a_3+... */
@@ -89,9 +89,24 @@ module StillReal
       else
         real[prealterm[0]] ^= pbit[0]
       end
-      pbit[0] <<= 1
-      pbit[0] = 0 if pbit[0] > 255
+      bit_lshift(pbit)
     end
+  end
+
+  def bit_lshift(pbit)
+    case pbit[0]
+    when -128
+      pbit[0] = 0
+    when 0
+      pbit[0] = 1
+    when 1, 2, 4, 8, 16, 32
+      pbit[0] <<= 1
+    when 64
+      pbit[0] = -128
+    else
+      Assert.assert_equal (1 == 2), true, "exception! #{pbit[0]}"
+    end
+    true
   end
 
   def still_real?(col, choice, depth, on, live)
@@ -159,7 +174,7 @@ module Update
     def initialize(g_conf, n_live, live)
       ring    = g_conf[0 + 1][1]                 # ring-size
       ncodes  = (Const::POWER[ring] + 1) / 2     # number of codes of colorings of R
-      real   = Array.new(Const::SIMATCHNUMBER[Const::MAXRING] / 8 + 2, 255)
+      real    = Array.new(Const::SIMATCHNUMBER[Const::MAXRING] / 8 + 2, 255)
       nchar   = Const::SIMATCHNUMBER[ring] / 8 + 1
 
       # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real"
