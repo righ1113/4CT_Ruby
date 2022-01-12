@@ -159,21 +159,21 @@ module Update
     def initialize(g_conf, n_live, live)
       ring    = g_conf[0 + 1][1]                 # ring-size
       ncodes  = (Const::POWER[ring] + 1) / 2     # number of codes of colorings of R
-      @real   = Array.new(Const::SIMATCHNUMBER[Const::MAXRING] / 8 + 2, 255)
+      real   = Array.new(Const::SIMATCHNUMBER[Const::MAXRING] / 8 + 2, 255)
       nchar   = Const::SIMATCHNUMBER[ring] / 8 + 1
 
       # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real"
       @n_live2, @live2 = n_live, live.deep_dup
-      update ring, nchar, ncodes
+      update ring, nchar, ncodes, real
       # computes {\cal C}_{i+1} from {\cal C}_i, updates "live"
     end
 
     private
 
-    def update(ring, nchar, ncodes)
+    def update(ring, nchar, ncodes, real)
       i = 0
       while i.zero? || (update_sub? ncodes)
-        test_match ring, nchar
+        test_match ring, nchar, real
         # computes {\cal M}_{i+1} from {\cal M}_i, updates the bits of "real" */
         i += 1
       end
@@ -197,14 +197,14 @@ module Update
         if new_n_live.zero?
           print "\n\n\n                  ***  D-reducible  ***\n"
         else
-          print "\n\n\n                ***  Not D-reducible  ***"
+          print "\n\n\n                ***  Not D-reducible  ***\n"
         end
         @n_live2 = new_n_live
         false
       end
     end
 
-    def test_match(ring, nchar)
+    def test_match(ring, nchar, real)
       # This generates all balanced signed matchings, and for each one, tests
       # whether all associated colourings belong to "live". It writes the answers
       # in the bits of the characters of "real". *)
@@ -242,7 +242,7 @@ module Update
             interval[2 * n - 1] = b + 1
             interval[2 * n]     = a - 1
           end
-          augment n, interval, 1, weight, match_w, nreal, ring, 0, 0, bit, realterm, nchar, @real, @live2
+          augment n, interval, 1, weight, match_w, nreal, ring, 0, 0, bit, realterm, nchar, real, @live2
         end
       end
 
@@ -270,7 +270,7 @@ module Update
           interval[2 * n]     = ring - 1
         end
         pow = (Const::POWER[ring + 1] - 1) / 2
-        augment n, interval, 1, weight, match_w, nreal, ring, pow, 1, bit, realterm, nchar, @real, @live2
+        augment n, interval, 1, weight, match_w, nreal, ring, pow, 1, bit, realterm, nchar, real, @live2
       end
       printf "                       %d\n", nreal[0] # right
     end
