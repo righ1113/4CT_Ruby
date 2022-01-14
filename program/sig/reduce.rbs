@@ -125,7 +125,6 @@ module Findlive
       Array[Array[Integer]] angle,
       Integer ring,
       Integer edd,
-      Integer extentclaim,
       Integer ncodes,
       Integer jjj,
       Array[Integer] ccc,

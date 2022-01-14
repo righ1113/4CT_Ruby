@@ -21,7 +21,7 @@ module Findlive
 
     private
 
-    def findlive(ring, bigno, ncodes, angle, extentclaim)
+    def findlive(ring, bigno, ncodes, angle, exm)
       # computes {\cal C}_0 and stores it in live. That is, computes codes of
       # colorings of the ring that are not restrictions of tri-colorings of the
       # free extension. Returns the number of such codes
@@ -30,29 +30,38 @@ module Findlive
       c[ed], c[j]    = 1, 2
       forbidden      = Array.new(Const::EDGES, 0)
       forbidden[j]   = 5
-      @n_live, @live = findlive_sub bigno, angle, ring, ed, extentclaim, ncodes, j, c, forbidden
+      @n_live, @live = findlive_sub(bigno, angle, ring, ed, ncodes, j, c, forbidden) do |ccc, jjj, edd, extent|
+        ccc[jjj] <<= 1
+        ret1, *a  = while (ccc[jjj] & 8) != 0
+                      if jjj >= edd - 1
+                        print_status ring, ncodes, extent, exm
+                        break [true, jjj, ccc]
+                      end
+                      jjj += 1
+                      ccc[jjj] <<= 1
+                    end
+        if ret1
+          jjj, ccc = a
+          [true, jjj, ccc]
+        else
+          [false, jjj, ccc]
+        end
+      end
     end
 
-    def findlive_sub(bigno, angle, ring, edd, extentclaim, ncodes, jjj, ccc, forbidden)
+    def findlive_sub(bigno, angle, ring, edd, ncodes, jjj, ccc, forbidden)
+      Assert.assert_equal (1 == 2), true, 'no block!' unless block_given?
       extent = 0
       262_144.times do
         while (forbidden[jjj] & ccc[jjj]) != 0
-          ccc[jjj] <<= 1
-          while (ccc[jjj] & 8) != 0
-            (print_status ring, ncodes, extent, extentclaim; return [ncodes - extent, @live]) if jjj >= edd - 1
-            jjj += 1
-            ccc[jjj] <<= 1
-          end
+          ret1, jjj, ccc = yield ccc, jjj, edd, extent
+          return [ncodes - extent, @live] if ret1
         end
 
         if jjj == ring + 1
           extent = record ccc, ring, angle, extent, bigno
-          ccc[jjj] <<= 1
-          while (ccc[jjj] & 8) != 0
-            (print_status ring, ncodes, extent, extentclaim; return [ncodes - extent, @live]) if jjj >= edd - 1
-            jjj += 1
-            ccc[jjj] <<= 1
-          end
+          ret1, jjj, ccc = yield ccc, jjj, edd, extent
+          return [ncodes - extent, @live] if ret1
         else
           jjj -= 1
           return [ncodes - extent, @live] if jjj.negative?
