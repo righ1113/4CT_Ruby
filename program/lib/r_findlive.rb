@@ -52,7 +52,7 @@ module Findlive
     def findlive_sub(bigno, angle, ring, edd, ncodes, jjj, ccc, forbidden)
       Assert.assert_equal (1 == 2), true, 'no block!' unless block_given?
       extent = 0
-      262_144.times do
+      262_144.times do |_cnt|
         while (forbidden[jjj] & ccc[jjj]) != 0
           ret1, jjj, ccc = yield ccc, jjj, edd, extent
           return [ncodes - extent, @live] if ret1
