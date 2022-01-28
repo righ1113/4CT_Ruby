@@ -35,7 +35,7 @@ module Strip
     def strip_sub2(g_conf, verts, ring, done, term)
       best, max = 1, Array.new(Const::MVERTS, 0)
 
-      ((ring + 1)..verts).each do
+      ((ring + 1)..verts).each do |_cnt|
         # First we find all vertices from the interior that meet the "done"
         # vertices in an interval, and write them in max[1] .. max[maxes]
         maxint = maxes = 0
