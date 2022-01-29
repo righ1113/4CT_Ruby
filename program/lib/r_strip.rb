@@ -107,7 +107,7 @@ module Strip
     end
 
     def strip_sub3(g_conf, ring, done, term)
-      ring.times do
+      ring.times do |_cnt|
         maxint, best, v = 0, 0, 1
         while v <= ring
           unless done[v]
