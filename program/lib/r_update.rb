@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 require '../lib/c_const'
-require 'active_support'
-require 'active_support/core_ext'
+# require 'active_support'
+# require 'active_support/core_ext'
 
 # UpdateR クラスが include する
 module StillReal
@@ -23,7 +23,10 @@ module StillReal
       upper = interval[2 * r]
       ((lower + 1)..upper).each do |i|
         (lower..(i - 1)).each do |j|
-          weight[depth + 1] = match_w[i][j]
+          weight[depth + 1][0] = match_w[i][j][0]
+          weight[depth + 1][1] = match_w[i][j][1]
+          weight[depth + 1][2] = match_w[i][j][2]
+          weight[depth + 1][3] = match_w[i][j][3]
           (1..(2 * r - 2)).each { |h| new_i[h] = interval[h] }
           newn, h2 = r - 1, 2 * r - 1
           if j > lower + 1
@@ -247,7 +250,10 @@ module Update
       (2..(ring - 1)).each do |a|
         (1..(a - 1)).each do |b|
           n = 0
-          weight[1] = match_w[a][b]
+          weight[1][0] = match_w[a][b][0]
+          weight[1][1] = match_w[a][b][1]
+          weight[1][2] = match_w[a][b][2]
+          weight[1][3] = match_w[a][b][3]
           if b >= 3
             n = 1
             interval[1] = 1
@@ -274,7 +280,10 @@ module Update
 
       (1..(ring - 1)).each do |b|
         n = 0
-        weight[1] = match_w[ring][b]
+        weight[1][0] = match_w[ring][b][0]
+        weight[1][1] = match_w[ring][b][1]
+        weight[1][2] = match_w[ring][b][2]
+        weight[1][3] = match_w[ring][b][3]
         if b >= 3
           n = 1
           interval[1] = 1
