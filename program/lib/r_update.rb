@@ -57,6 +57,7 @@ module StillReal
     # "bit" and "realterm". "basecol" is for convenience in computing the
     # associated colourings; it is zero for matchings not incident with "ring".
     # "on" is nonzero iff the matching is incident with "ring". */
+    # @type const Assert: untyped
 
     choice = Array.new(8, 0)
     nbits = 1 << (depth - 1)
@@ -97,6 +98,7 @@ module StillReal
   end
 
   def bit_lshift(pbit)
+    # @type const Assert: untyped
     case pbit[0]
     when -128
       pbit[0] = 0
@@ -175,6 +177,9 @@ module Update
     attr_reader :n_live2, :live2
 
     def initialize(g_conf, n_live, live)
+      # @type const Const::POWER: Array[Integer]
+      # @type const Const::SIMATCHNUMBER: Array[Integer]
+      # @type const Const::MAXRING: Integer
       ring    = g_conf[0 + 1][1]                 # ring-size
       ncodes  = (Const::POWER[ring] + 1) / 2     # number of codes of colorings of R
       real    = Array.new(Const::SIMATCHNUMBER[Const::MAXRING] / 8 + 2, 255)
@@ -227,6 +232,7 @@ module Update
       # This generates all balanced signed matchings, and for each one, tests
       # whether all associated colourings belong to "live". It writes the answers
       # in the bits of the characters of "real". *)
+      # @type const Const::POWER: Array[Integer]
       nreal    = [0]
       # "nreal" will be the number of balanced signed matchings such that all
       # associated colourings belong to "live"; ie the total number of nonzero

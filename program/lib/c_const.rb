@@ -4,8 +4,23 @@ require 'minitest'
 
 # Const モジュール
 module Const
+  # @type const Assert: untyped
+  # @type const Minitest: untyped
   # Const クラス
   class Const
+    # @type const MAXVAL: Integer
+    # @type const CARTVERT: Integer
+    # @type const INFTY: Integer
+    # @type const MAXOUTLETS: Integer
+    # @type const MAXSYM: Integer
+    # @type const MAXELIST: Integer
+    # @type const MAXASTACK: Integer
+    # @type const MAXLEV: Integer
+    # @type const MVERTS: Integer
+    # @type const EDGES: Integer
+    # @type const MAXRING: Integer
+    # @type const POWER: Array[Integer]
+    # @type const SIMATCHNUMBER: Array[Integer]
     MAXVAL     = 12
     CARTVERT   = 5 * MAXVAL + 2 # domain of l_A, u_A, where A is an axle
     INFTY      = 12             # the "12" in the definition of limited part
@@ -27,8 +42,10 @@ module Const
 
   # Assert クラス
   class Assert < Minitest::Test
+    # @type const Minitest::Assertions: untyped
     class << self
       # このモジュールの中に各種assertが定義されているのでinclude
+      # @type const Minitest::Assertions: untyped
       include Minitest::Assertions
 
       attr_accessor :assertions

@@ -11,6 +11,8 @@ module Angles
     attr_reader :angle, :diffangle, :sameangle, :contract
 
     def initialize(g_conf, edgeno)
+      # @type const Const::EDGES: Integer
+      # @type const Assert: untyped
       edge = 3 * g_conf[0 + 1][0] - 3 - g_conf[0 + 1][1]
 
       @angle     = Array.new(Const::EDGES) { Array.new(5, 0) }
@@ -41,6 +43,7 @@ module Angles
     private
 
     def angles_sub2(g_conf, edgeno)
+      # @type const Assert: untyped
       (1..g_conf[0 + 1][0]).each do |v|
         (1..g_conf[v + 2][0 + 1]).each do |h|
           next if v <= g_conf[0 + 1][1] && h == g_conf[v + 2][0 + 1]
@@ -73,6 +76,8 @@ module Angles
     end
 
     def angles_sub3(g_conf)
+      # @type const Const::MVERTS: Integer
+      # @type const Assert: untyped
       neighbour = Array.new(Const::MVERTS, false)
       # checking that there is a triad
       return true if @contract[0] < 4

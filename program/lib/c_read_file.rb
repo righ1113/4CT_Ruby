@@ -25,6 +25,7 @@ module ReadFile
     private
 
     def read_file
+      # @type const JSON: untyped
       file = File.new('../4ct_data/d_good_confs.json')
       @data = JSON.load file # Hashに変換
       file.close
@@ -69,6 +70,7 @@ module ReadFile
 
     def read_file
       # rbs に File.open()が定義されていない
+      # @type const JSON: untyped
       file = File.new('../4ct_data/r_good_confs.json')
       @data = JSON.load file # 3D配列 に変換
       file.close

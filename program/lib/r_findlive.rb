@@ -11,6 +11,7 @@ module Findlive
     attr_reader :n_live, :live
 
     def initialize(g_conf, angle)
+      # @type const Const::POWER: Array[Integer]
       ring    = g_conf[0 + 1][1]                 # ring-size
       ncodes  = (Const::POWER[ring] + 1) / 2     # number of codes of colorings of R
       bigno   = (Const::POWER[ring + 1] - 1) / 2 # needed in "inlive"
@@ -25,6 +26,7 @@ module Findlive
       # computes {\cal C}_0 and stores it in live. That is, computes codes of
       # colorings of the ring that are not restrictions of tri-colorings of the
       # free extension. Returns the number of such codes
+      # @type const Const::EDGES: Integer
       ed             = angle[0][2]
       c, j           = Array.new(Const::EDGES, 0), ed - 1
       c[ed], c[j]    = 1, 2
@@ -50,6 +52,7 @@ module Findlive
     end
 
     def findlive_sub(bigno, angle, ring, edd, ncodes, jjj, ccc, forbidden)
+      # @type const Assert: untyped
       Assert.assert_equal (1 == 2), true, 'no block!' unless block_given?
       extent = 0
       262_144.times do |_cnt|
@@ -77,6 +80,7 @@ module Findlive
     def record(col, ring, angle, extent, bigno)
       # Given a colouring specified by a 1,2,4-valued function "col", it computes
       # the corresponding number, checks if it is in live, and if so removes it.
+      # @type const Const::POWER: Array[Integer]
       weight = [0, 0, 0, 0, 0]
       (1..ring).each do |i|
         sum = 7 - col[angle[i][1]] - col[angle[i][2]]
@@ -101,6 +105,8 @@ module Findlive
     end
 
     def print_status(ring, totalcols, extent, extentclaim)
+      # @type const Const::SIMATCHNUMBER: Array[Integer]
+      # @type const Assert: untyped
       print "\n\n   This has ring-size #{ring}, so there are #{totalcols} colourings total,\n"
       print "   and #{Const::SIMATCHNUMBER[ring]} balanced signed matchings.\n"
       print "\n   There are #{extent} colourings that extend to the configuration."

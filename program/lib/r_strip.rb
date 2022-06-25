@@ -11,6 +11,8 @@ module Strip
     attr_reader :edgeno
 
     def initialize(g_conf)
+      # @type const Const::EDGES: Integer
+      # @type const Const::MVERTS: Integer
       verts, ring = g_conf[0 + 1][0], g_conf[0 + 1][1] # ring-size
       @edgeno     = Array.new(Const::EDGES) { Array.new(Const::EDGES, 0) }
 
@@ -33,6 +35,7 @@ module Strip
     private
 
     def strip_sub2(g_conf, verts, ring, done, term)
+      # @type const Const::MVERTS: Integer
       best, max = 1, Array.new(Const::MVERTS, 0)
 
       ((ring + 1)..verts).each do |_cnt|

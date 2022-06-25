@@ -26,6 +26,7 @@ class Reduce
   include Update
 
   def self.reduce
+    # @type const Assert: untyped
     g_confs = GoodConfsR.new
     # p g_confs.data[1][0][1] # => 122
 
@@ -46,6 +47,7 @@ class Reduce
   end
 
   def self.c_d_reducible?(g_conf, iii)
+    # @type const UpdateR: untyped
     # puts 'start c_d_reducible?()'
     # p g_conf[0][1]
 
