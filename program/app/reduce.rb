@@ -15,6 +15,7 @@ require '../lib/r_strip'
 require '../lib/r_angles'
 require '../lib/r_findlive'
 require '../lib/r_update'
+require '../lib/r_credu'
 
 # Reduce クラス
 class Reduce
@@ -24,6 +25,7 @@ class Reduce
   include Angles
   include Findlive
   include Update
+  include CRedu
 
   def self.reduce
     # @type const Assert: untyped
@@ -48,6 +50,8 @@ class Reduce
 
   def self.c_d_reducible?(g_conf, iii)
     # @type const UpdateR: untyped
+    # @type const CReduR: untyped
+    # @type const Assert: untyped
     # puts 'start c_d_reducible?()'
     # p g_conf[0][1]
 
@@ -70,11 +74,21 @@ class Reduce
     # p findlive.n_live
 
     # 4. update()
-    _update = UpdateR.new g_conf, findlive.n_live, findlive.live
+    update = UpdateR.new g_conf, findlive.n_live, findlive.live
 
     # 5. checkContract()
     # This verifies that the set claimed to be a contract for the
     # configuration really is.
+    if update.n_live2.zero?
+      if angles.contract[0].zero?
+        # D可約 のときは、CReduR を作らない
+      else
+        Assert.assert_equal (1 == 2), true, '         ***  ERROR: CONTRACT PROPOSED  ***\n\n'
+      end
+    else
+      CReduR.new g_conf, update.n_live2, update.live2, angles.diffangle, angles.sameangle, angles.contract
+      # checkContract ring bigno live2 nlive2 diffangle sameangle contract
+    end
 
     iii != 24
   end

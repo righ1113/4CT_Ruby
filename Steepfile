@@ -6,5 +6,6 @@ target :lib do
   check "program/lib/r_angles.rb"
   check "program/lib/r_findlive.rb"
   check "program/lib/r_update.rb"
+  check "program/lib/r_credu.rb"
   signature "program/sig"
 end

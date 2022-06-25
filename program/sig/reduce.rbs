@@ -194,6 +194,21 @@ module Update
   end
 end
 
+module CRedu
+  class CReduR
+    def initialize: (
+      Array[Array[Integer]] g_conf,
+      Integer n_live,
+      Array[Integer] live,
+      Array[Array[Integer]] diffangle,
+      Array[Array[Integer]] sameangle,
+      Array[Integer] contract
+    ) -> void
+    private
+    def update: (Integer ring, Integer nchar, Integer ncodes, Array[Integer] real) -> bool
+  end
+end
+
 
 class Reduce
   include Strip
