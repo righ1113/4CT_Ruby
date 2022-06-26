@@ -205,7 +205,18 @@ module CRedu
       Array[Integer] contract
     ) -> void
     private
-    def update: (Integer ring, Integer nchar, Integer ncodes, Array[Integer] real) -> bool
+    def check_c_reduce: (
+      Array[Integer] _forbidden,
+      Array[Integer] _ccc,
+      Array[Integer] _contract,
+      Integer _jjj,
+      Integer _start,
+      Array[Array[Integer]] _diffangle,
+      Array[Array[Integer]] _sameangle,
+      Integer _bigno,
+      Integer _ring,
+      Array[Integer] _live
+    ) -> bool
   end
 end
 

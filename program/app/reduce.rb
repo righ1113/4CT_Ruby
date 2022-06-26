@@ -87,7 +87,6 @@ class Reduce
       end
     else
       CReduR.new g_conf, update.n_live2, update.live2, angles.diffangle, angles.sameangle, angles.contract
-      # checkContract ring bigno live2 nlive2 diffangle sameangle contract
     end
 
     iii != 24
