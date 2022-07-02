@@ -217,6 +217,12 @@ module CRedu
       Integer _ring,
       Array[Integer] _live
     ) -> bool
+    def in_live: (
+      Array[Integer] col,
+      Integer ring,
+      Array[Integer] live,
+      Integer bigno
+    ) -> bool
   end
 end
 

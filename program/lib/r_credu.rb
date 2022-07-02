@@ -8,8 +8,6 @@ module CRedu
   class CReduR
     include Const
 
-    # attr_reader :n_live2, :live2
-
     def initialize(g_conf, n_live, live, diffangle, sameangle, contract)
       # @type const Assert: untyped
       # @type const Const::POWER: Array[Integer]
@@ -27,16 +25,14 @@ module CRedu
       c         = Array.new(Const::EDGES, 0)
       forbidden = Array.new(Const::EDGES, 0) # called F in the notes
       start -= 1 while contract[start] != 0
-      c[start] = 1
-      j = start - 1
+      c[start], j = 1, start - 1
       j -= 1 while contract[j] != 0
-      dm = diffangle[j]
-      sm = sameangle[j]
+      dm, sm = diffangle[j], sameangle[j]
       c[j], u = 1, 4
       imax1 = dm[0] >= 4 ? 4 : dm[0]
-      (1..imax1).each { |i| u ||= c[dm[i]] }
+      (1..imax1).each { |i| u |= c[dm[i]] }
       imax2 = sm[0] >= 4 ? 4 : sm[0]
-      (1..imax2).each { |i| u ||= ~c[sm[i]] }
+      (1..imax2).each { |i| u |= ~c[sm[i]] }
       forbidden[j] = u
 
       check_c_reduce forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live
@@ -46,8 +42,68 @@ module CRedu
 
     private
 
-    def check_c_reduce(_forbidden, _ccc, _contract, _jjj, _start, _diffangle, _sameangle, _bigno, _ring, _live)
-      true
+    def check_c_reduce(forbidden, ccc, contract, jjj, start, diffangle, sameangle, bigno, ring, live)
+      # @type const Assert: untyped
+      c, j = ccc, jjj
+      dm, sm = Array.new(5, 0), Array.new(5, 0)
+      2_097_152.times do
+        while (forbidden[j] & c[j]) != 0
+          c[j] <<= 1
+          while (c[j] & 8) != 0
+            j += 1 while contract[j] != 0
+            if j >= start
+              puts '               ***  Contract confirmed 1 ***\n\n'
+              return true
+            end
+            c[j] <<= 1
+          end
+        end
+        if j == 1
+          Assert.assert_equal in_live(c, ring, live, bigno), true, 'ERROR: INPUT CONTRACT IS INCORRECT  ***\n\n'
+          c[j] <<= 1;
+          while (c[j] & 8) != 0
+            j += 1 while contract[j] != 0
+            if j >= start
+              puts '               ***  Contract confirmed 2 ***\n\n'
+              return true
+            end
+            c[j] <<= 1
+          end
+          next
+        end
+        return false if j <= 0
+        j -= 1 while contract[j] != 0
+        dm, sm = diffangle[j], sameangle[j]
+        c[j], u = 1, 0
+        (1..4).each do |i|
+          u |=  c[dm[i]] if i <= dm[0]
+          u |= ~c[sm[i]] if i <= sm[0]
+        end
+        forbidden[j] = u
+      end
+      # Assert.assert_equal (1 == 2), true, 'check_c_reduce : It was not good though it was repeated 2097152 times!'
+      false # ここには来ない
+    end
+
+    def in_live(col, ring, live, bigno)
+      # Same as "record" above, except now it returns whether the colouring is in
+      # live, and does not change live. */
+      # @type const Const::POWER: Array[Integer]
+      weight = Array.new(5, 0)
+      (1..4).each { |i| weight[i] = 0 }
+      (1..ring).each { |i| weight[col[i]] += Const::POWER[i] }
+      min = max = weight[4]
+      (1..2).each do |i|
+        w = weight[i]
+        if w < min
+          min = w
+        elsif w > max
+          max = w
+        end
+      end
+      colno = bigno - 2 * min - max
+      return true if live[colno].zero?
+      false
     end
   end
 end
