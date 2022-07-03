@@ -24,9 +24,9 @@ module CRedu
       start     = diffangle[0][2]
       c         = Array.new(Const::EDGES, 0)
       forbidden = Array.new(Const::EDGES, 0) # called F in the notes
-      start -= 1 while contract[start] != 0
+      start -= 1 until contract[start].zero?
       c[start], j = 1, start - 1
-      j -= 1 while contract[j] != 0
+      j -= 1 until contract[j].zero?
       dm, sm = diffangle[j], sameangle[j]
       c[j], u = 1, 4
       imax1 = dm[0] >= 4 ? 4 : dm[0]
@@ -37,7 +37,7 @@ module CRedu
 
       check_c_reduce forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live
 
-      p 'CReduR.'
+      # p 'CReduR.'
     end
 
     private
@@ -45,14 +45,13 @@ module CRedu
     def check_c_reduce(forbidden, ccc, contract, jjj, start, diffangle, sameangle, bigno, ring, live)
       # @type const Assert: untyped
       c, j = ccc, jjj
-      dm, sm = Array.new(5, 0), Array.new(5, 0)
       2_097_152.times do
-        while (forbidden[j] & c[j]) != 0
+        until (forbidden[j] & c[j]).zero?
           c[j] <<= 1
-          while (c[j] & 8) != 0
-            j += 1 while contract[j] != 0
+          until (c[j] & 8).zero?
+            loop { j += 1; break if contract[j].zero? }
             if j >= start
-              puts '               ***  Contract confirmed 1 ***\n\n'
+              puts '               ***  Contract confirmed 1 ***'
               return true
             end
             c[j] <<= 1
@@ -60,11 +59,11 @@ module CRedu
         end
         if j == 1
           Assert.assert_equal in_live(c, ring, live, bigno), true, 'ERROR: INPUT CONTRACT IS INCORRECT  ***\n\n'
-          c[j] <<= 1;
-          while (c[j] & 8) != 0
-            j += 1 while contract[j] != 0
+          c[j] <<= 1
+          until (c[j] & 8).zero?
+            loop { j += 1; break if contract[j].zero? }
             if j >= start
-              puts '               ***  Contract confirmed 2 ***\n\n'
+              puts '               ***  Contract confirmed 2 ***'
               return true
             end
             c[j] <<= 1
@@ -72,7 +71,7 @@ module CRedu
           next
         end
         return false if j <= 0
-        j -= 1 while contract[j] != 0
+        loop { j -= 1; break if contract[j].zero? }
         dm, sm = diffangle[j], sameangle[j]
         c[j], u = 1, 0
         (1..4).each do |i|
@@ -81,7 +80,7 @@ module CRedu
         end
         forbidden[j] = u
       end
-      # Assert.assert_equal (1 == 2), true, 'check_c_reduce : It was not good though it was repeated 2097152 times!'
+      Assert.assert_equal (1 == 2), true, 'check_c_reduce : It was not good though it was repeated 2097152 times!'
       false # ここには来ない
     end
 
