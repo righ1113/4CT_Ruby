@@ -89,7 +89,7 @@ class Reduce
       CReduR.new g_conf, update.n_live2, update.live2, angles.diffangle, angles.sameangle, angles.contract
     end
 
-    iii != 24
+    iii != 633
   end
 end
 
