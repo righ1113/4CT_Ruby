@@ -78,22 +78,26 @@ module Findlive
       # Given a colouring specified by a 1,2,4-valued function "col", it computes
       # the corresponding number, checks if it is in live, and if so removes it.
       weight = [0, 0, 0, 0, 0]
-      (1..ring).each do |i|
-        sum = 7 - col[angle[i][1]] - col[angle[i][2]]
-        weight[sum] += Const::POWER[i]
+      match_all((1..ring).to_a.map { |i| [col, angle, weight, Const::POWER, i, true] }) do
+        with(_[*_, _[_col, _angle, _weight, _power, _i, __('
+            sum = 7 - col[angle[i][1]] - col[angle[i][2]]
+            weight[sum] += power[i]
+          ')], *_]) { i }
       end
 
-      min = max = weight[4]
-      (1..2).each do |i|
-        w = weight[i]
-        if w < min
-          min = w
-        elsif w > max
-          max = w
-        end
+      min_max = [weight[4], weight[4]]
+      match_all((1..2).to_a.map { |i| [min_max, weight, i, true] }) do
+        with(_[*_, _[_min_max, _weight, _i, __('
+            w = weight[i]
+            if w < min_max[0]
+              min_max[0] = w
+            elsif w > min_max[1]
+              min_max[1] = w
+            end
+          ')], *_]) { i }
       end
 
-      colno = bigno - 2 * min - max
+      colno = bigno - 2 * min_max[0] - min_max[1]
       (extent += 1; @live[colno] = 0) if @live[colno] != 0
       extent
     end

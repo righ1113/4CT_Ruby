@@ -24,10 +24,8 @@ module CRedu
       j -= 1 until contract[j].zero?
       dm, sm = diffangle[j], sameangle[j]
       c[j], u = 1, 4
-      imax1 = dm[0] >= 4 ? 4 : dm[0]
-      (1..imax1).each { |i| u |= c[dm[i]] }
-      imax2 = sm[0] >= 4 ? 4 : sm[0]
-      (1..imax2).each { |i| u |= ~c[sm[i]] }
+      (1..dm[0]).each { |i| u |= c[dm[i]] }
+      (1..sm[0]).each { |i| u |= ~c[sm[i]] }
       forbidden[j] = u
 
       check_c_reduce forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live
@@ -82,18 +80,22 @@ module CRedu
       # live, and does not change live. */
       # @type const Const::POWER: Array[Integer]
       weight = Array.new(5, 0)
-      (1..4).each { |i| weight[i] = 0 }
+      (1..4).each    { |i| weight[i] = 0 }
       (1..ring).each { |i| weight[col[i]] += Const::POWER[i] }
-      min = max = weight[4]
-      (1..2).each do |i|
-        w = weight[i]
-        if w < min
-          min = w
-        elsif w > max
-          max = w
-        end
+
+      min_max = [weight[4], weight[4]]
+      match_all((1..2).to_a.map { |i| [min_max, weight, i, true] }) do
+        with(_[*_, _[_min_max, _weight, _i, __('
+            w = weight[i]
+            if w < min_max[0]
+              min_max[0] = w
+            elsif w > min_max[1]
+              min_max[1] = w
+            end
+          ')], *_]) { i }
       end
-      colno = bigno - 2 * min - max
+
+      colno = bigno - 2 * min_max[0] - min_max[1]
       return true if live[colno].zero?
       false
     end

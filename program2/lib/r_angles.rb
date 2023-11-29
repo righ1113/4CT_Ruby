@@ -65,14 +65,14 @@ module Angles
     def angles_sub2_sub(xxx, yyy, ccc)
       x, y, c = xxx, yyy, ccc
       return unless x > c
-      d            = @angle[c][0] >= 4 ? 4 : @angle[c][0] += 1
+      d = @angle[c][0] += 1
       @angle[c][d] = x
       if @contract[x].zero? && @contract[y].zero? && @contract[c].zero?
-        e                = @diffangle[c][0] >= 4 ? 4 : @diffangle[c][0] += 1
+        e = @diffangle[c][0] += 1
         @diffangle[c][e] = x
       end
       return if @contract[y].zero?
-      e                = @sameangle[c][0] >= 4 ? 4 : @sameangle[c][0] += 1
+      e = @sameangle[c][0] += 1
       @sameangle[c][e] = x
     end
 
