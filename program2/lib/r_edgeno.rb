@@ -15,9 +15,11 @@ module EdgeNo
       @edgeno     = Array.new(Const::EDGES) { Array.new(Const::EDGES, 0) }
 
       # 1. stripSub1
-      (1..ring).each do |v|
-        u = v > 1 ? v - 1 : ring
-        @edgeno[u][v] = @edgeno[v][u] = v
+      match_all((1..ring).to_a.map { |v| [ring, edgeno, v, true] }) do
+        with(_[*_, _[_ring, _edgeno, _v, __('
+            u = v > 1 ? v - 1 : ring
+            @edgeno[u][v] = @edgeno[v][u] = v
+          ')], *_]) { v }
       end
       done, term = Array.new(Const::MVERTS, false), 3 * (verts - 1) - ring
 

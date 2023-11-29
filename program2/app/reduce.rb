@@ -2,7 +2,7 @@
 
 # ・実行方法
 # $ cd program2/app
-# $ bundle exec ruby reduce.rb                        (130m)
+# $ bundle exec ruby reduce.rb                        (130m??)
 
 require '../lib/c_const'
 require '../lib/c_read_file'
@@ -11,6 +11,9 @@ require '../lib/r_angles'
 require '../lib/r_findlive'
 require '../lib/r_dredu'
 require '../lib/r_credu'
+require 'egison'
+
+include Egison
 
 # Reduce クラス
 class Reduce
@@ -70,7 +73,7 @@ class Reduce
     # configuration really is.
     if dredu.n_live.zero?
       if angles.contract[0].zero?
-        # D可約 のときは、CReduR を作らない
+        # D可約 のときは、CRedu を作らない
       else
         Const.assert (1 == 2), true, '         ***  ERROR: CONTRACT PROPOSED  ***\n\n'
       end
@@ -78,7 +81,7 @@ class Reduce
       CRedu.new g_conf, dredu.n_live, dredu.live, angles.diffangle, angles.sameangle, angles.contract
     end
 
-    i != 633
+    i != 19 # 633
   end
 end
 
