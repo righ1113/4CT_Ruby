@@ -220,7 +220,7 @@ module Rules
       i = 0
       while sss[i] < 99
         (i += 1; next) if sss[i].negative?
-        print '?' if sss[i].zero?
+        print '?'      if sss[i].zero?
         print "#{@posout[i][:num]},#{@posout[i][:xxx]} "
         i += 1
       end

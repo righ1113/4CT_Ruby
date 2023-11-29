@@ -80,14 +80,9 @@ module CaseSplit
     end
 
     def down_nosym(lev)
-      @nosym = down_nosym_sub @nosym, lev
-    end
-
-    private
-
-    def down_nosym_sub(nosym, lev)
-      return nosym if nosym < 1 || @sym[nosym - 1][:nol] - 1 < lev
-      down_nosym_sub (nosym - 1), lev
+      @nosym = (match(@nosym.downto(0).to_a.map { |n| [lev, n, true] }) do
+        with(Multiset.call(_[_lev, _n, __('n < 1 || @sym[n - 1][:nol] - 1 < lev')], *_)) { n }
+      end)
     end
   end
 end

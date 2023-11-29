@@ -8,7 +8,7 @@
 
 # ・実行方法
 # $ cd program2/app
-# $ bundle exec ruby discharge.rb 7                   (5m)
+# $ bundle exec ruby discharge.rb 11                  (3m)
 
 require '../lib/c_const'
 require '../lib/c_read_file'
@@ -16,6 +16,9 @@ require '../lib/d_rules'
 require '../lib/d_reducible'
 require '../lib/d_casesplit'
 require '../lib/d_chkapply'
+require 'egison'
+
+include Egison
 
 # Reducible他 をインクルードするため、クラスにする
 class Discharge

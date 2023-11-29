@@ -8,24 +8,32 @@ module Apply
   class Apply
     include Const
 
-    def self.outlet_forced(axles_low, axles_upp, pos_i, deg)
-      xxi = pos_i[:xxx] - 1
-      pos_i[:nol].times do |i|
-        p = pos_i[:pos][i]
-        p = xxi + (p - 1) % deg < deg ? p + xxi : p + xxi - deg
-        return 0 if pos_i[:low][i] > axles_low[p] || pos_i[:upp][i] < axles_upp[p]
-      end
-      pos_i[:val]
+    def self.outlet_forced(a_low, a_upp, pos_i, deg)
+      ret = (match(pos_i[:nol].times.to_a.map { |i| [a_low, a_upp, pos_i, deg, i, true] }) do
+        with(Multiset.call(_[_a_low, _a_upp, _pos_i, _deg, _i, __('o_fp_pred?(a_low, a_upp, pos_i, deg, true, i)')
+          ], *_)) { 0 }
+      end)
+      # p ret
+      ret.nil? ? pos_i[:val] : 0
     end
 
-    def self.outlet_permitted(axles_low, axles_upp, pos_i, deg)
+    def self.outlet_permitted(a_low, a_upp, pos_i, deg)
+      ret = (match(pos_i[:nol].times.to_a.map { |i| [a_low, a_upp, pos_i, deg, i, true] }) do
+        with(Multiset.call(_[_a_low, _a_upp, _pos_i, _deg, _i, __('o_fp_pred?(a_low, a_upp, pos_i, deg, false, i)')
+          ], *_)) { 0 }
+      end)
+      ret.nil? ? pos_i[:val] : 0
+    end
+
+    def self.o_fp_pred?(a_low, a_upp, pos_i, deg, flg, i)
       xxi = pos_i[:xxx] - 1
-      pos_i[:nol].times do |i|
-        p = pos_i[:pos][i]
-        p = xxi + (p - 1) % deg < deg ? p + xxi : p + xxi - deg
-        return 0 if pos_i[:low][i] > axles_upp[p] || pos_i[:upp][i] < axles_low[p]
+      p   = pos_i[:pos][i]
+      p   = xxi + (p - 1) % deg < deg ? p + xxi : p + xxi - deg
+      if flg
+        pos_i[:low][i] > a_low[p] || pos_i[:upp][i] < a_upp[p]
+      else
+        pos_i[:low][i] > a_upp[p] || pos_i[:upp][i] < a_low[p]
       end
-      pos_i[:val]
     end
 
     def self.refl_forced(axles_low, axles_upp, pos_i, deg)
