@@ -1,0 +1,51 @@
+AllCops:
+  TargetRubyVersion: 3.2.2
+
+MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 80
+
+# Use only ascii symbols in comments.
+AsciiComments:
+  Enabled: false
+
+AbcSize:
+  Max: 177
+
+CyclomaticComplexity:
+  Max: 23
+
+PerceivedComplexity:
+  Max: 25
+
+Security/JSONLoad:
+  Enabled: false
+
+Metrics/ParameterLists:
+  Max: 14
+
+Style/Next:
+  Enabled: false
+
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
+Style/ParallelAssignment:
+  Enabled: false
+
+Metrics/BlockLength:
+  Max: 43
+
+Style/Semicolon:
+  Enabled: false
+
+Metrics/ModuleLength:
+  Max: 200
+Metrics/ClassLength:
+  Max: 200
+
+NonLocalExitFromIterator:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
