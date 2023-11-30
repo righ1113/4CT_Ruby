@@ -12,17 +12,12 @@ module EdgeNo
 
     def initialize(g_conf)
       verts, ring = g_conf[0 + 1][0], g_conf[0 + 1][1] # ring-size
+      done,  term = Array.new(Const::MVERTS, false), 3 * (verts - 1) - ring
       @edgeno     = Array.new(Const::EDGES) { Array.new(Const::EDGES, 0) }
 
       # 1. stripSub1
-      # ★★★ Egison pattern 2 ★★★
-      match_all((1..ring).to_a.map { |v| [ring, edgeno, v, true] }) do
-        with(_[*_, _[_ring, _edgeno, _v, __('
-            u = v > 1 ? v - 1 : ring
-            @edgeno[u][v] = @edgeno[v][u] = v
-          ')], *_]) { v }
-      end
-      done, term = Array.new(Const::MVERTS, false), 3 * (verts - 1) - ring
+      # ★★★ Egison pattern 3 ★★★
+      match_all((1..ring).to_a) { with(_[*_, _v, *_]) { u = v > 1 ? v - 1 : ring; @edgeno[u][v] = @edgeno[v][u] = v } }
 
       # 2. stripSub2
       # This eventually lists all the internal edges of the configuration
