@@ -67,7 +67,7 @@ module EdgeNo
         first    = 1
         previous = done[g_conf[best + 2][d + 1]] # この3行、多重代入できなかった
         while previous || !done[g_conf[best + 2][first + 1]]
-          previous = done[g_conf[best + 2][1 + first]]
+          previous = done[g_conf[best + 2][first + 1]]
           first += 1
           (first = 1; break) if first > d
         end
@@ -96,11 +96,14 @@ module EdgeNo
       (((last + 2)..d).each { |j| return 0 if done[grav[j + 1]] }; return length) if first > 1
 
       worried = false
-      ((last + 2)..d).each do |j|
-        if done[grav[j + 1]]
-          length, worried = length + 1, true
-        elsif worried
-          return 0
+      # ★★★ Egison pattern 3 ★★★
+      match_all(((last + 2)..d).to_a.map { |j| [j, true] }) do
+        with(_[*_, _[_j, _], *_]) do
+          if done[grav[j + 1]]
+            length, worried = length + 1, true
+          elsif worried
+            return 0
+          end
         end
       end
       length
@@ -113,15 +116,15 @@ module EdgeNo
 
     def strip_sub3(g_conf, ring, done, term)
       ring.times do |_cnt|
-        maxint, best, v = 0, 0, 1
-        while v <= ring
-          unless done[v]
+        maxint, best = 0, 0
+        # ★★★ Egison pattern 3 ★★★
+        match_all((1..ring).to_a.map { |v| [done, v, true] }) do
+          with(_[*_, _[_done, _v, __('!done[v]')], *_]) do # next
             u, w                   = v > 1 ? v - 1 : ring, v < ring ? v + 1 : 1
             done_int_u, done_int_w = done[u] ? 1 : 0, done[w] ? 1 : 0
             inter                  = 3 * g_conf[v + 2][0 + 1] + 4 * (done_int_u + done_int_w)
             maxint, best           = inter, v if inter > maxint
           end
-          v += 1
         end
 
         grav, u = g_conf[best + 2], best > 1 ? best - 1 : ring
