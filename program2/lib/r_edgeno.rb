@@ -53,12 +53,7 @@ module EdgeNo
         # From the terms in max we choose the one of maximum degree
         maxdeg = 0
         # ★★★ Egison pattern 3 ★★★
-        match_all((1..maxes).to_a.map { |h| [h, true] }) do
-          with(_[*_, _[_h, _], *_]) do
-            d = g_conf[max[h] + 2][0 + 1]
-            maxdeg, best = d, max[h] if d > maxdeg
-          end
-        end
+        match_all((1..maxes).to_a) { with(_[*_, _h, *_]) { d = g_conf[max[h] + 2][0 + 1]; maxdeg, best = d, max[h] if d > maxdeg } }
         # So now, the vertex "best" will be the next vertex to be done
 
         d        = g_conf[best + 2][0 + 1]

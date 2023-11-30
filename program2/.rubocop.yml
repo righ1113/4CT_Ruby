@@ -49,3 +49,9 @@ NonLocalExitFromIterator:
 
 Naming/MethodParameterName:
   Enabled: false
+
+Style/IfUnlessModifier:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 132
