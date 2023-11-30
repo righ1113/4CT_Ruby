@@ -28,7 +28,23 @@ module CRedu
       (1..sm[0]).each { |i| u |= ~c[sm[i]] }
       forbidden[j] = u
 
-      check_c_reduce forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live
+      check_c_reduce(forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live) do
+         |c2, j2, start2, contract2|
+        ret, *a = until (c2[j2] & 8).zero?
+                    loop { j2 += 1; break if contract2[j2].zero? }
+                    if j2 >= start2
+                      puts '               ***  Contract confirmed ***'
+                      break [true, j2, c2]
+                    end
+                    c2[j2] <<= 1
+                  end
+        if ret
+          j2, c2 = a
+          [true,  j2, c2]
+        else
+          [false, j2, c2]
+        end
+      end
 
       # p 'CReduR.'
     end
@@ -39,26 +55,14 @@ module CRedu
       2_097_152.times do
         until (forbidden[j] & c[j]).zero?
           c[j] <<= 1
-          until (c[j] & 8).zero?
-            loop { j += 1; break if contract[j].zero? }
-            if j >= start
-              puts '               ***  Contract confirmed 1 ***'
-              return true
-            end
-            c[j] <<= 1
-          end
+          ret, j, c = yield c, j, start, contract # ブロックを実行する
+          return true if ret
         end
         if j == 1
           Const.assert in_live(c, ring, live, bigno), true, 'ERROR: INPUT CONTRACT IS INCORRECT  ***\n\n'
           c[j] <<= 1
-          until (c[j] & 8).zero?
-            loop { j += 1; break if contract[j].zero? }
-            if j >= start
-              puts '               ***  Contract confirmed 2 ***'
-              return true
-            end
-            c[j] <<= 1
-          end
+          ret, j, c = yield c, j, start, contract
+          return true if ret
           next
         end
         return false if j <= 0
