@@ -79,6 +79,7 @@ module CaseSplit
       @mmm[axles[:lev] + 1] = 0
     end
 
+    # ★★★ Egison pattern 1 ★★★
     def down_nosym(lev)
       @nosym = (match(@nosym.downto(0).to_a.map { |n| [lev, n, true] }) do
         with(Multiset.call(_[_lev, _n, __('n < 1 || @sym[n - 1][:nol] - 1 < lev')], *_)) { n }

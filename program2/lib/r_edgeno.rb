@@ -15,6 +15,7 @@ module EdgeNo
       @edgeno     = Array.new(Const::EDGES) { Array.new(Const::EDGES, 0) }
 
       # 1. stripSub1
+      # ★★★ Egison pattern 2 ★★★
       match_all((1..ring).to_a.map { |v| [ring, edgeno, v, true] }) do
         with(_[*_, _[_ring, _edgeno, _v, __('
             u = v > 1 ? v - 1 : ring
@@ -41,14 +42,16 @@ module EdgeNo
         # First we find all vertices from the interior that meet the "done"
         # vertices in an interval, and write them in max[1] .. max[maxes]
         maxint = maxes = 0
-        ((ring + 1)..verts).each do |v|
-          next if done[v]
-          inter = in_interval g_conf[v + 2], done
-          if inter > maxint
-            maxint, maxes, max[1] = inter, 1, v
-          elsif inter == maxint
-            maxes += 1
-            max[maxes] = v
+        # ★★★ Egison pattern 3 ★★★
+        match_all(((ring + 1)..verts).to_a.map { |v| [done, v, true] }) do
+          with(_[*_, _[_done, _v, __('!done[v]')], *_]) do # next
+            inter = in_interval g_conf[v + 2], done
+            if inter > maxint
+              maxint, maxes, max[1] = inter, 1, v
+            elsif inter == maxint
+              maxes += 1
+              max[maxes] = v
+            end
           end
         end
 

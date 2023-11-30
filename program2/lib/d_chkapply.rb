@@ -8,6 +8,7 @@ module Apply
   class Apply
     include Const
 
+    # ★★★ Egison pattern 1 ★★★
     def self.outlet_forced(a_low, a_upp, pos_i, deg)
       ret = (match(pos_i[:nol].times.to_a.map { |i| [a_low, a_upp, pos_i, deg, i, true] }) do
         with(Multiset.call(_[_a_low, _a_upp, _pos_i, _deg, _i, __('o_fp_pred?(a_low, a_upp, pos_i, deg, true, i)')

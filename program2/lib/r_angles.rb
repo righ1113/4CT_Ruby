@@ -21,6 +21,7 @@ module Angles
       @contract[0]            = g_conf[1 + 1][0] # number of edges in contract
       @contract[Const::EDGES] = g_conf[0 + 1][3]
 
+      # ★★★ Egison pattern 2 ★★★
       str = '***  ERROR: CONTRACT CONTAINS NON-EDGE  ***'
       match_all((1..@contract[0]).to_a.map { |i| [Const.method(:assert), str, g_conf, edgeno, i, true] }) do
         with(_[*_, _[_assert, _str, _g_conf, _edgeno, _i, __('

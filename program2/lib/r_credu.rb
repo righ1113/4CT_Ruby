@@ -87,6 +87,7 @@ module CRedu
       (1..4).each    { |i| weight[i] = 0 }
       (1..ring).each { |i| weight[col[i]] += Const::POWER[i] }
 
+      # ★★★ Egison pattern 2 ★★★
       min_max = [weight[4], weight[4]]
       match_all((1..2).to_a.map { |i| [min_max, weight, i, true] }) do
         with(_[*_, _[_min_max, _weight, _i, __('

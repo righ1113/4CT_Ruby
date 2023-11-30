@@ -78,6 +78,7 @@ module Findlive
       # Given a colouring specified by a 1,2,4-valued function "col", it computes
       # the corresponding number, checks if it is in live, and if so removes it.
       weight = [0, 0, 0, 0, 0]
+      # ★★★ Egison pattern 2 ★★★
       match_all((1..ring).to_a.map { |i| [col, angle, weight, Const::POWER, i, true] }) do
         with(_[*_, _[_col, _angle, _weight, _power, _i, __('
             sum = 7 - col[angle[i][1]] - col[angle[i][2]]
