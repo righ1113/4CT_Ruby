@@ -4,7 +4,7 @@ require '../lib/c_const'
 
 # CRedu モジュール
 module CRedu
-  # CReduR クラス
+  # CRedu クラス
   class CRedu
     include Const
 
@@ -28,8 +28,7 @@ module CRedu
       (1..sm[0]).each { |i| u |= ~c[sm[i]] }
       forbidden[j] = u
 
-      check_c_reduce(forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live) do
-         |c2, j2, start2, contract2|
+      check_c_reduce(forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live) do |c2, j2, start2, contract2|
         ret, *a = until (c2[j2] & 8).zero?
                     loop { j2 += 1; break if contract2[j2].zero? }
                     if j2 >= start2

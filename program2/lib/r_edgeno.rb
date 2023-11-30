@@ -41,12 +41,7 @@ module EdgeNo
         match_all(((ring + 1)..verts).to_a.map { |v| [done, v, true] }) do
           with(_[*_, _[_done, _v, __('!done[v]')], *_]) do # next
             inter = in_interval g_conf[v + 2], done
-            if inter > maxint
-              maxint, maxes, max[1] = inter, 1, v
-            elsif inter == maxint
-              maxes += 1
-              max[maxes] = v
-            end
+            if inter > maxint then maxint, maxes, max[1] = inter, 1, v elsif inter == maxint then maxes += 1; max[maxes] = v end
           end
         end
 
@@ -56,22 +51,12 @@ module EdgeNo
         match_all((1..maxes).to_a) { with(_[*_, _h, *_]) { d = g_conf[max[h] + 2][0 + 1]; maxdeg, best = d, max[h] if d > maxdeg } }
         # So now, the vertex "best" will be the next vertex to be done
 
-        d        = g_conf[best + 2][0 + 1]
-        first    = 1
-        previous = done[g_conf[best + 2][d + 1]] # この3行、多重代入できなかった
-        while previous || !done[g_conf[best + 2][first + 1]]
-          previous = done[g_conf[best + 2][first + 1]]
-          first += 1
-          (first = 1; break) if first > d
-        end
+        d, r      = g_conf[best + 2][0 + 1], 1
+        previous  = done[g_conf[best + 2][d + 1]]
+        (previous = done[g_conf[best + 2][r + 1]]; r += 1; (r = 1; break) if r > d) while previous || !done[g_conf[best + 2][r + 1]]
 
-        h = first
-        while done[g_conf[best + 2][h + 1]]
-          @edgeno[best][g_conf[best + 2][h + 1]] = @edgeno[g_conf[best + 2][h + 1]][best] = term
-          term -= 1
-          (break if first == 1; h = 0) if h == d
-          h += 1
-        end
+        h = r
+        (@edgeno[best][g_conf[best + 2][h + 1]] = @edgeno[g_conf[best + 2][h + 1]][best] = term; term -= 1; (break if r == 1; h = 0) if h == d; h += 1) while done[g_conf[best + 2][h + 1]]
         done[best] = true
       end
       # This eventually lists all the internal edges of the configuration
@@ -79,33 +64,20 @@ module EdgeNo
     end
 
     def in_interval(grav, done)
-      d = grav[0 + 1]
-      first = in_get d, 1, true, done, grav
+      d = grav[0 + 1]; first = in_get d, 1, true, done, grav
       return (done[grav[d + 1]] ? 1 : 0) if first == d
-      last = in_get d, first, false, done, grav
-      length = last - first + 1
+      last = in_get d, first, false, done, grav; length = last - first + 1
       return length if last == d
 
       (((last + 2)..d).each { |j| return 0 if done[grav[j + 1]] }; return length) if first > 1
 
       worried = false
       # ★★★ Egison pattern 3 ★★★
-      match_all(((last + 2)..d).to_a.map { |j| [j, true] }) do
-        with(_[*_, _[_j, _], *_]) do
-          if done[grav[j + 1]]
-            length, worried = length + 1, true
-          elsif worried
-            return 0
-          end
-        end
-      end
+      match_all(((last + 2)..d).to_a) { with(_[*_, _j, *_]) { if done[grav[j + 1]] then length, worried = length + 1, true elsif worried then return 0 end } }
       length
     end
 
-    def in_get(ddd, xxx, f_flg, done, grav)
-      f_flg ? (xxx += 1 while xxx < ddd && !done[grav[xxx + 1]]) : (xxx += 1 while xxx < ddd && done[grav[1 + xxx + 1]])
-      xxx
-    end
+    def in_get(e, x, fl, d, g) = (fl ? (x += 1 while x < e && !d[g[x + 1]]) : (x += 1 while x < e && d[g[x + 2]]); x)
 
     def strip_sub3(g_conf, ring, done, term)
       ring.times do |_cnt|
@@ -123,8 +95,7 @@ module EdgeNo
         grav, u = g_conf[best + 2], best > 1 ? best - 1 : ring
         my_each = done[u] ? (2..(grav[0 + 1] - 1)).reverse_each : (2..(grav[0 + 1] - 1)).each
         my_each.with_index do |h, _|
-          @edgeno[best][grav[h + 1]] = @edgeno[grav[h + 1]][best] = term
-          term -= 1
+          @edgeno[best][grav[h + 1]] = @edgeno[grav[h + 1]][best] = term; term -= 1
         end
         done[best] = true
       end

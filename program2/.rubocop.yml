@@ -54,4 +54,7 @@ Style/IfUnlessModifier:
   Enabled: false
 
 Layout/LineLength:
-  Max: 132
+  Max: 187
+
+Style/OneLineConditional:
+  Enabled: false
