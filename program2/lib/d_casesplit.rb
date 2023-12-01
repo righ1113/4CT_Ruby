@@ -79,11 +79,16 @@ module CaseSplit
       @mmm[axles[:lev] + 1] = 0
     end
 
+    def down_nosym(lev) = (@nosym = down_nosym_sub lev)
+
+    private
+
     # ★★★ Egison pattern 1 ★★★
-    def down_nosym(lev)
-      @nosym = (match(@nosym.downto(0).to_a.map { |n| [lev, n, true] }) do
-        with(Multiset.call(_[_lev, _n, __('n < 1 || @sym[n - 1][:nol] - 1 < lev')], *_)) { n }
-      end)
+    def down_nosym_sub(lev)
+      match_all(@nosym.downto(0).to_a.map { |n| [lev, n, true] }) do
+        with(_[*_, _[_lev, _n, __('n < 1 || @sym[n - 1][:nol] - 1 < lev')], *_]) { return n }
+      end
+      # ここへは来ない
     end
   end
 end

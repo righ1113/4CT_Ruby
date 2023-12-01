@@ -51,6 +51,7 @@ module CRedu
     private
 
     def check_c_reduce(forbidden, c, contract, j, start, diffangle, sameangle, bigno, ring, live)
+      Const.assert (1 == 2), true, 'no block!' unless block_given?
       2_097_152.times do
         until (forbidden[j] & c[j]).zero?
           c[j] <<= 1
